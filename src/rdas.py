@@ -82,7 +82,8 @@ def P(M, t, S, s, sink):
 
 # w = matricea de costuri
 # t = marimea cuplajului dorit
-def all_rda(M, t):
+# AAP = All Assignments Problem
+def AAP(M, t):
     Sol = []
     S = solveGAP(M, t)
     if len(S) == 0:
@@ -171,7 +172,7 @@ def all_rda(M, t):
 
 
 # rda = Rank Distance Aggregation
-def rda(rankings, latin_word):
+def RDAs(rankings, latin_word):
     l = CNT_BEST_PRODUCTIONS
     # u = universul de cuvinte
     u = list(set().union(*[x for x in rankings]))
@@ -184,7 +185,7 @@ def rda(rankings, latin_word):
                     w[i][pos] += abs(_ord[i][j] - CNT_BEST_PRODUCTIONS + pos)
                 else:
                     w[i][pos] += abs(_ord[i][j])
-    solutions = all_rda(w, len(u))
+    solutions = AAP(w, len(u))
 
     #check
     best = []
@@ -246,9 +247,9 @@ def main():
             f = open(filepath + dir_name + '/' + file_name, 'r')
             parse(f, latin_dict)
             f.close
-        out = open(str(dir_name) + '-all---best-' + str(CNT_BEST_PRODUCTIONS) + '.txt', 'w')
+        out = open(str(dir_name) + '-all-best-' + str(CNT_BEST_PRODUCTIONS) + '.txt', 'w')
         for latin_word in latin_dict:
-            best = rda(latin_dict[latin_word], latin_word)
+            best = RDAs(latin_dict[latin_word], latin_word)
             for sir in best:
                 out.write(sir+'\n')
         out.close
