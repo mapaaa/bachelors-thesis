@@ -83,6 +83,8 @@ def P(M, t, S, s, sink):
 # w = matricea de costuri
 # t = marimea cuplajului dorit
 # AAP = All Assignments Problem
+# Adapted from F. Manea and C.Ploscaru / A Generalization of the Assignment
+# Problem and its Application to the Rank Aggregation Problem
 def AAP(M, t):
     Sol = []
     S = solveGAP(M, t)
@@ -90,13 +92,18 @@ def AAP(M, t):
         return Sol
 
     u = M.shape[0]
-    i_x = list(range(u))
-    i_y = list(range(u))
-    sink = CNT_BEST_PRODUCTIONS
+    # etichetele liniilor din matricea de costuri (cuvintelor)
+    i_x = list(range(u)) 
+    # etichetele coloanelor din matricea de costuri (pozitiilor)
+    i_y = list(range(u)) 
 
+    # Presupunem ca toate cuvintele care apar in agregare dupa lungimea finala 
+    # dorita se afla de fapt pe aceeasi pozitie
+    sink = CNT_BEST_PRODUCTIONS
     for i in range(len(S)):
         if S[i][1] > sink:
             S[i] = (S[i][0], sink)
+
     S.sort()
     Sol = [S]
     St = [(np.copy(M), t, S.copy(), [], sink, i_x.copy(), i_y.copy())]
@@ -107,6 +114,7 @@ def AAP(M, t):
         s1 = 0
         for (x, y) in S1:
             s1 = s1 + M1[x][y]
+
         S1_prim = P(M1, t1, S1, s1, sink)
         for i in range(len(S1_prim)):
             if S1_prim[i][1] > sink:
@@ -115,7 +123,7 @@ def AAP(M, t):
             continue
         #print('S1_prim=', [(i_x[x], i_y[y]) for (x, y) in S1_prim])
     
-        # adaug la solutie
+        # adaug la solutie etichetele reale
         S1_c = S1_prim.copy()
         for i in range(len(S1_c)):
             (x, y) = S1_c[i]
@@ -132,19 +140,22 @@ def AAP(M, t):
                 y = y1
                 break
 
-        # subproblema 1
+        # subproblema 1: nu avem voie sa folosim muchia (x, y)
         M1[x][y] = 1e9
         if y >= sink:
+            # cuvantul x nu mai poate fi asignat niciunei alte poziti
             for i in range(sink, M1.shape[1]):
                 M1[x][i] = 1e9
         St.append((np.copy(M1), t1, S1_prim.copy(), E.copy(), sink, i_x.copy(), i_y.copy()))
 
-        # subproblema 2
+        # subproblema 2: folosim muchia (x, y)
         if (i_x[x], i_y[y]) not in E:
             E.append((i_x[x], i_y[y]))
 
         S1.remove((x, y))
+        # stergem linia x
         M1 = np.delete(M1, (x), axis=0)
+        # actualizam etichetele
         i_x.pop(x)
         for i in range(len(S1)):
             if S1[i][0] >= x:
