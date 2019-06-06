@@ -178,7 +178,7 @@ def RDAs(rankings, latin_word):
     u = list(set().union(*[x for x in rankings]))
     _ord = make_ord(u, rankings)
     w = np.zeros((len(u), len(u)), dtype=int)
-    for i, word in enumerate(u):
+    for i in range(len(u)):
         for pos in range(len(u)):
             for j in range(len(rankings)):
                 if pos <= CNT_BEST_PRODUCTIONS:
@@ -187,18 +187,17 @@ def RDAs(rankings, latin_word):
                     w[i][pos] += abs(_ord[i][j])
     solutions = AAP(w, len(u))
 
-    #check
     best = []
     for i in range(len(solutions)):
         sir = 'SOURCE_' + latin_word
-        ordine = [''] * len(u)
+        aggregation = [''] * len(u)
         for (x, y) in solutions[i]:
-            ordine[y] = u[x]
+            aggregation[y] = u[x]
         for word in range(CNT_BEST_PRODUCTIONS):
             if word == 0:
-                sir = sir + '_' + ordine[word]
+                sir = sir + '_' + aggregation[word]
             else:
-                sir = sir + ' | ' + ordine[word]
+                sir = sir + ' | ' + aggregation[word]
         best.append(sir)
     return best
 
