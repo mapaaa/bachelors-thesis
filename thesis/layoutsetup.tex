@@ -4,6 +4,7 @@
 %% know what you are doing.  These settings strongly interact in the
 %% final look of the document.
 
+\usepackage{UNIBUClogo}
 
 % Turn extra space before chapter headings off.
 \setlength{\beforechapskip}{0pt}
@@ -15,13 +16,11 @@
 % Chapter style redefinition
 \makeatletter
 
-\if@twoside
-  \pagestyle{Ruled}
-  \copypagestyle{chapter}{Ruled}
-\else
-  \pagestyle{ruled}
-  \copypagestyle{chapter}{ruled}
-\fi
+\pagestyle{ruled}
+\makeevenfoot{ruled}{}{}{\thepage}
+\makeoddfoot{ruled}{}{}{\thepage}
+\copypagestyle{chapter}{ruled}
+
 \makeoddhead{chapter}{}{}{}
 \makeevenhead{chapter}{}{}{}
 \makeheadrule{chapter}{\textwidth}{0pt}
@@ -29,12 +28,12 @@
 
 \makechapterstyle{bianchimod}{%
   \chapterstyle{default}
-  \renewcommand*{\chapnamefont}{\normalfont\Large\sffamily}
-  \renewcommand*{\chapnumfont}{\normalfont\Large\sffamily}
+  \renewcommand*{\chapnamefont}{\normalfont\Large}
+  \renewcommand*{\chapnumfont}{\normalfont\Large}
   \renewcommand*{\printchaptername}{%
     \chapnamefont\centering\@chapapp}
   \renewcommand*{\printchapternum}{\chapnumfont {\thechapter}}
-  \renewcommand*{\chaptitlefont}{\normalfont\huge\sffamily}
+  \renewcommand*{\chaptitlefont}{\normalfont\huge}
   \renewcommand*{\printchaptertitle}[1]{%
     \hrule\vskip\onelineskip \centering \chaptitlefont\textbf{\vphantom{gyM}##1}\par}
   \renewcommand*{\afterchaptertitle}{\vskip\onelineskip \hrule\vskip
@@ -45,16 +44,16 @@
 % Use the newly defined style
 \chapterstyle{bianchimod}
 
-\setsecheadstyle{\Large\bfseries\sffamily}
-\setsubsecheadstyle{\large\bfseries\sffamily}
-\setsubsubsecheadstyle{\bfseries\sffamily}
-\setparaheadstyle{\normalsize\bfseries\sffamily}
-\setsubparaheadstyle{\normalsize\itshape\sffamily}
+\setsecheadstyle{\Large\bfseries}
+\setsubsecheadstyle{\large\bfseries}
+\setsubsubsecheadstyle{\bfseries}
+\setparaheadstyle{\normalsize\bfseries}
+\setsubparaheadstyle{\normalsize\itshape}
 \setsubparaindent{0pt}
 
 % Set captions to a more separated style for clearness
-\captionnamefont{\sffamily\bfseries\footnotesize}
-\captiontitlefont{\sffamily\footnotesize}
+\captionnamefont{\bfseries\footnotesize}
+\captiontitlefont{\footnotesize}
 \setlength{\intextsep}{16pt}
 \setlength{\belowcaptionskip}{1pt}
 
@@ -63,11 +62,11 @@
 \settocdepth{subsection}
 
 %% Titlepage adjustments
-\pretitle{\vspace{0pt plus 0.7fill}\begin{center}\HUGE\sffamily\bfseries}
+\pretitle{\vspace{0pt plus 0.7fill}\begin{center}\HUGE\normalfont\bfseries}
 \posttitle{\end{center}\par}
-\preauthor{\par\begin{center}\let\and\\\Large\sffamily}
+\preauthor{\par\begin{center}\let\and\\\Large\normalfont}
 \postauthor{\end{center}}
-\predate{\par\begin{center}\Large\sffamily}
+\predate{\par\begin{center}\Large\normalfont}
 \postdate{\end{center}}
 
 \def\@advisors{}
@@ -77,14 +76,15 @@
 \def\@thesistype{}
 \newcommand{\thesistype}[1]{\def\@thesistype{#1}}
 
+\renewcommand{\maketitlehooka}{\noindent\UNIBUClogo[2in]}
 
 \renewcommand{\maketitlehookb}{\vspace{1in}%
-  \par\begin{center}\Large\sffamily\@thesistype\end{center}}
+  \par\begin{center}\Large\normalfont\@thesistype\end{center}}
 
 \renewcommand{\maketitlehookd}{%
   \vfill\par
   \begin{flushright}
-    \sffamily
+    \normalfont
     \@advisors\par
     \@department, UNIBUC 
   \end{flushright}
