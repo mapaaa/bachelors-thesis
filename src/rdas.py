@@ -11,7 +11,6 @@ from munkres import Munkres, DISALLOWED, print_matrix
 
 
 CNT_BEST_PRODUCTIONS = 5 
-COV5 = 1
 
 # Calculeaza o matrice de dimensiune (n, m) unde
 # n = numarul de cuvinte din univers
@@ -44,6 +43,7 @@ def solveGAP(M, t):
     try:
         indexes = algo.compute(m)
     except:
+        print('Error in solveGAP')
         return []
     return indexes
 
