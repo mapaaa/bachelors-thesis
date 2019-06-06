@@ -21,7 +21,7 @@ def parse(f):
         j = line.find(sep0, i)
         latin_word = line[i:j]
 
-        i = j +1
+        i = j + 1
         j = line.find(sep1, i)    # sep1 = '|'
         while j != -1:
             productions.append(line[i:j])
