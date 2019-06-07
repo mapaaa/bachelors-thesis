@@ -10,7 +10,7 @@ set(Images
 
 add_latex_document(
   thesis.tex
-  INPUTS abstract.tex appendix.tex extrapackages.tex introduction.tex layoutsetup.tex macrosetup.tex sections.tex rules.tex theoremsetup.tex typography.tex
+  INPUTS abstract.tex appendix.tex introduction.tex extrapackages.tex layoutsetup.tex macrosetup.tex rankdistance.tex rules.tex theoremsetup.tex
   BIBFILES refs.bib
   IMAGES ${Images}
   )
