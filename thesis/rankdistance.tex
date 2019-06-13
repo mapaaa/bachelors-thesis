@@ -6,14 +6,58 @@ pe prima poziție aflându-se perechea cognate cu cea mai mare probabilitate. Pr
 acestora cu o anumită metrică vom obține cele mai probabile perechi cognate.
 
 \section{Clasamente și distanța rank}
-Un \textit{clasament} este o listă ordonată de obiecte, pe prima poziție aflându-se cel cu cea mai
-mare importanță. În unele situații se pune problema găsirii unui clasament cât mai apropiat de o
-mulțime de mai multe clasamente. Pentru a rezolva această problemă trebuie sa definim mai întâi ce
-înseamnă distanța dintre două clasemente sau dintre un singur clasament și o mulțime de clasamente.
+Un \textit{clasament} este o listă ordonată de obiecte după un anumit criteriu, pe prima poziție 
+aflându-se cel cu cea mai mare importanță. În unele situații se pune problema găsirii unui clasament
+cât mai apropiat de o mulțime de mai multe clasamente. Pentru a rezolva această problemă trebuie sa
+definim mai întâi ce înseamnă distanța dintre două clasemente sau dintre un singur clasament și o
+mulțime de clasamente.
 
 Există mai multe distanțe folosite cu succes în diverse aplicații: distanța \textit{Kedall tau}, 
 \textit{Spearman footrule}, \textit{Levenshtein}, dar noi vom folosi distanța \textit{rank}
-\cite{rankdistance}.
+\cite{rankdistance}, pe care o vom defini folosindu-ne de următoarele noțiuni. Fie
+$U = \{1, 2, ..., n\}$ 
+o mulțime finită de obiecte numită univers. Un clasament peste universul $U$
+este lista ordonată 
+$\tau = (x_1 > x_2 > ... > x_d)$, unde 
+$\{x_1, x_2, ..., x_d\} \subseteq U$.
+$>$ este o relație de ordine strictă reprezentând criteriul de ordonare. Notăm cu $\tau(x)$, poziția
+elementului $x \in U$ în clasamentul $\tau$ dacă $x \in \tau$, numerotând pozițiile de la 1 
+începând cu cel mai important obiect din clasament. Dacă un clasament conține toate elementele din
+univers, atunci el se va numi \textit{clasament total}. Asemănător, dacă conține doar o submulțime
+de obiecte din univers, atunci îl vom numi \textit{clasament parțial}.
+
+Notăm ordinea elementului $x$ în $\tau$ astfel:
+\[
+  ord(\tau, x)= \begin{dcases}
+    |n + 1 - \tau(x)|    &, x \in \tau \\
+    0                    &, x \in U \setminus \tau
+  \end{dcases}
+\]
+
+\begin{definition}
+  Fie $\tau$ si $\sigma$ două clasamente parțiale peste același univers $U$. Atunci distanța rank va
+  fi $\Updelta(\tau, \sigma) = \sum_{x \in \tau \cup \sigma} |ord(\tau, x) - ord(\sigma, x)|$.
+\end{definition}
+
+Se observă faptul că, în calculul distanței rank, se ia în considerare ordinea definită mai sus
+și nu poziția. În primul rând, cum primele poziții sunt cele mai importante, distanța dintre două
+clasamente trebuie sa fie cu atât mai mare cu cât diferă mai mult începutul lor\cite{linguisticstructuresmarcus}.
+În al doilea rând, definiția funcției $ord$ pune accentul pe lungimea clasamentelor întrucăt putem
+presupune că un clasament mai lung a fost obținut în urma comparării mai multor obiecte din univers.
+Deci ordinea elementelor este mai solidă. Spre exemplu, dacă două clasamente de lungimi diferite au
+același element pe prima poziție, există totuși o diferență a ordinii obiectului în cele două liste,
+diferență ce contribuie la calculul distanței rank totale.\cite{rankaggregationproblem}
+
+\subsection{Agregări cu distanța rank}
+O \textit{agregare de clasamente} reprezintă un singur clasament $\sigma$ astfel încât o anumită 
+metrică de la acesta la mulțimea de liste de agregat $T$ este minimă. Raportându-ne la distanța rank,
+putem defini formal o agregare astfel:
+
+\begin{definition}
+$\sigma$ este o agregare a unui set $T = \{\tau_1, \tau_2, ..., \tau_m\} (m = |T|)$ de clasamente 
+dacă și numai dacă $max_{1 \leqslant i \leqslant m}(\Updelta(\tau_i, \sigma))$ este minim posibil,
+unde $\Updelta(\alpha, \beta)$ reprezintă distanța rank dintre clasamentele $\alpha$ și $\beta$.
+\end{definition}
 
 \section{Determinarea agregărilor optime}
 \subsection{Reducerea la o problemă de cuplaj perfect de cost minim}
