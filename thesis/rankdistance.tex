@@ -1,11 +1,20 @@
 \chapter{Agregarea rezultatelor folosind distanța rank}
-Am văzut cum putem obține producții de cuvinte combinând câte o limbă romanică cu latina.
-Pentru a îmbunătății rezultatele vrem să folosim informație din mai multe limbi romanice 
-moderne. Fiecare clasificator întoarce o listă ordonată de cuvinte latinești, pe prima 
-poziție aflându-se perechea cognate cu cea mai mare probabilitate. Prin agregarea acestora
-cu o anumită metrică vom obține cele mai probabile perechi cognate.
-\section{Distanța rank}
- 
+Am văzut cum putem obține producții de cuvinte combinând câte o singură limbă romanică cu 
+limba latină. Pentru a îmbunătății rezultatele vrem să folosim informația din mai multe 
+limbi romanice moderne. Astfel, fiecare clasificator întoarce o listă ordonată de cuvinte latinești, 
+pe prima poziție aflându-se perechea cognate cu cea mai mare probabilitate. Prin agregarea 
+acestora cu o anumită metrică vom obține cele mai probabile perechi cognate.
+
+\section{Clasamente și distanța rank}
+Un \textit{clasament} este o listă ordonată de obiecte, pe prima poziție aflându-se cel cu cea mai
+mare importanță. În unele situații se pune problema găsirii unui clasament cât mai apropiat de o
+mulțime de mai multe clasamente. Pentru a rezolva această problemă trebuie sa definim mai întâi ce
+înseamnă distanța dintre două clasemente sau dintre un singur clasament și o mulțime de clasamente.
+
+Există mai multe distanțe folosite cu succes în diverse aplicații: distanța \textit{Kedall tau}, 
+\textit{Spearman footrule}, \textit{Levenshtein}, dar noi vom folosi distanța \textit{rank}
+\cite{rankdistance}.
+
 \section{Determinarea agregărilor optime}
 \subsection{Reducerea la o problemă de cuplaj perfect de cost minim}
 \subsection{Calcularea tuturor agregărilor optime}
