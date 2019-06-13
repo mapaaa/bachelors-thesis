@@ -35,8 +35,10 @@ Notăm ordinea elementului $x$ în $\tau$ astfel:
 \]
 
 \begin{definition}
-  Fie $\tau$ si $\sigma$ două clasamente parțiale peste același univers $U$. Atunci distanța rank va
-  fi $\Updelta(\tau, \sigma) = \sum_{x \in \tau \cup \sigma} |ord(\tau, x) - ord(\sigma, x)|$.
+Fie $\tau$ si $\sigma$ două clasamente parțiale peste același univers $U$. Atunci distanța rank va fi
+\[
+  \Updelta(\tau, \sigma) = \smashoperator{\sum_{x \in \tau \cup \sigma}} |ord(\tau, x) - ord(\sigma, x)|
+\]
 \end{definition}
 
 Se observă faptul că, în calculul distanței rank, se ia în considerare ordinea definită mai sus
@@ -54,11 +56,31 @@ metrică de la acesta la mulțimea de liste de agregat $T$ este minimă. Raport�
 putem defini formal o agregare astfel:
 
 \begin{definition}
-$\sigma$ este o agregare a unui set $T = \{\tau_1, \tau_2, ..., \tau_m\} (m = |T|)$ de clasamente 
-dacă și numai dacă $max_{1 \leqslant i \leqslant m}(\Updelta(\tau_i, \sigma))$ este minim posibil,
-unde $\Updelta(\alpha, \beta)$ reprezintă distanța rank dintre clasamentele $\alpha$ și $\beta$.
+Fie un set de clasamente $T = \{\tau_1, \tau_2, ..., \tau_m\}, m = |T|$ dintr-un univers $U$ și
+$\sigma = (\sigma_1 > \sigma_2 > ... > \sigma_k) $ un clasament astfel încât $\sigma_i \in U, 
+\forall 1 \leqslant i \leqslant k$. Definim distanța rank de la $\sigma$ la $T$ astfel:
+\[
+  \Updelta(\sigma, T) = \smashoperator{\sum_{i = 1}^{m}} \Updelta(\sigma, \tau_i)
+\]
 \end{definition}
 
-\section{Determinarea agregărilor optime}
+\begin{definition}
+Fie un set de clasamente $T = \{\tau_1, \tau_2, ..., \tau_m\}, m = |T|$ dintr-un univers $U$. Se
+numește agregare a mulțimii $T$ folosind distanța rank clasamentul $\sigma$ cu propietatea că 
+$\Updelta(\sigma, T)$ este minim posibil.
+\end{definition}
+
+\section{Determinarea tuturor agregărilor producțiilor de cuvinte}
+În capitolul precedent am prezentat o metoda de a combina o limbă romanică modernă si limba latină
+pentru a automatiza procesul de determinare a etimonului latinesc. Metoda returna primele $n$
+cuvinte posibile ordonate de la cel cu probabilitatea cea mai mare la cel cu probabilitatea cea mai
+mică. Vom considera aceste liste de cuvinte ca fiind clasamente. Pentru fiecare cuvânt latinesc vom
+agrega clasamentele produse din fiecare limbă romanică modernă \textit{(ro, it, fr, es, pt)}.
+Se observă faptul că pot exista mai multe astfel de agregări așa că ne propunem să le aflăm pe toate
+într-un mod eficient din punct de vedere al complexității timp. Alegem să luăm în considerare
+doar primele 5 cele mai bune cuvinte din fiecare set. Astfel, vom avea 
+
+
+
 \subsection{Reducerea la o problemă de cuplaj perfect de cost minim}
 \subsection{Calcularea tuturor agregărilor optime}
