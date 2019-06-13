@@ -9,3 +9,7 @@ cd build/
 cmake ../
 make
 ```
+
+## Useful links
+Beside reading the documentation of the importated packages, you should check out these websites:
+* [Detexify](http://detexify.kirelabs.org/classify.html) good for finding math symbols by drawing them
