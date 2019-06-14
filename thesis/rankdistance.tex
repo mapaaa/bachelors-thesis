@@ -100,7 +100,7 @@ Se observă faptul că, în cazul în care $\sigma$ conține toate elementele di
 
 
 \subsection{Reducerea la o problemă de cuplaj perfect de cost minim}
-Fiecare matrice $W^l$ din secțiunea precedentă este caluculată în mod independent de celelalte.
+Fiecare matrice $W^l$ din secțiunea precedentă este calculată în mod independent de celelalte.
 Deci putem determina doar o singură matrice pentru o anumită lungime fixată $l$. Vom presupune
 în continuare ca vrem să calculăm agregările unui set de clasamente având lungimea egală cu numărul
 total de elemente din univers. Astfel, problema se reduce la găsirea unu clasament $\sigma$ ce 
@@ -110,7 +110,7 @@ minimizează formula \eqref{eq:minimize}. Formal:
 Fiind dată o matrice pătratică $W$, $W = (w_{i, j})_{1 \leqslant i,j \leqslant n}$ vrem să
 determinăm următoarea mulțime:
 \[
-  S = \{(i_1, i_2, ..., i_n) | (i_k \neq i_j \forall k \neq j), (i_j \in U) \text{ și } \smashoperator{\sum_{j=1}^n} w_{i_j, j} \text{ este minim}\}
+  S = \{(i_1, i_2, ..., i_n) | (i_k \neq i_j, \forall k \neq j), (i_j \in U) \text{ și } \smashoperator{\sum_{j=1}^n} w_{i_j, j} \text{ este minim}\}
 \]
 \end{problem}
 
@@ -118,6 +118,14 @@ Problema de mai sus se aseamănă cu o problemă de cuplaj perfect de cost minim
 perechi între obiectele dintr-un univers și pozițiile unui clasament de tip agregare, iar fiecare
 combinație are un anumit cost. Practic $(i_1, i_2, ..., i_n)$ reprezintă o permutare a elementelor
 din $U$.
+
+O solutie pentru a rezolva problema precedenta este aplicarea algoritmul Ungar prezentat de Khun \cite{hungarianmethod}.
+Altfel, putem considera matricea $W$ ca fiind o matrice de costuri intr-un graf bipartit $G$ pe care
+aplicam un algoritm clasic de gasire a cuplajului maxim de cost minim. Conform \cite{flowassignment}
+aceasta problema poate fi rezolvata in timp polinomial $\mathcal{O}(n^3)$ construind o retea de flux
+cu capacitati convenabile si prin gasirea unor drumuri de augmentare minime din punct de vedere
+al costului folosind algoritmul lui Dijsktra\cite{dijkstra}.
+
 
 \subsection{Calcularea tuturor agregărilor optime}
 
