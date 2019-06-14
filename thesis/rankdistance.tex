@@ -12,38 +12,40 @@ cât mai apropiat de o mulțime de mai multe clasamente. Pentru a rezolva aceast
 definim mai întâi ce înseamnă distanța dintre două clasemente sau dintre un singur clasament și o
 mulțime de clasamente.
 
-Există mai multe distanțe folosite cu succes în diverse aplicații: distanța \textit{Kedall tau}, 
+Există mai multe metrici folosite cu succes în diverse aplicații: distanța \textit{Kedall tau}, 
 \textit{Spearman footrule}, \textit{Levenshtein}, dar noi vom folosi distanța \textit{rank}
-\cite{rankdistance}, pe care o vom defini folosindu-ne de următoarele noțiuni. Fie
-$U = \{1, 2, ..., n\}$ 
-o mulțime finită de obiecte numită univers. Un clasament peste universul $U$
-este lista ordonată 
-$\tau = (x_1 > x_2 > ... > x_d)$, unde 
-$\{x_1, x_2, ..., x_d\} \subseteq U$.
-$>$ este o relație de ordine strictă reprezentând criteriul de ordonare. Notăm cu $\tau(x)$, poziția
-elementului $x \in U$ în clasamentul $\tau$ dacă $x \in \tau$, numerotând pozițiile de la 1 
-începând cu cel mai important obiect din clasament. Dacă un clasament conține toate elementele din
-univers, atunci el se va numi \textit{clasament total}. Asemănător, dacă conține doar o submulțime
-de obiecte din univers, atunci îl vom numi \textit{clasament parțial}.
+introdusa in articolul \cite{rankdistance}. In intregul capitol vom folosi următoarele notatii:
+\begin{itemize}
+    \item $U = \{1, 2, ..., n\}$ o mulțime finită de obiecte numită univers 
+    \item $\tau = (x_1 > x_2 > ... > x_d)$ un clasament peste universul $U$ 
+    \item $>$ o relație de ordine strictă reprezentând criteriul de ordonare 
+    \item $\tau(x)$ = poziția elementului $x \in U$ în clasamentul $\tau$ dacă $x \in \tau$, 
+      numerotând pozițiile de la 1 începând cu cel mai important obiect din clasament
+\end{itemize}
+
+Dacă un clasament conține toate elementele din univers, atunci el se va numi 
+\textit{clasament total}. Asemănător, dacă conține doar o submulțime de obiecte din univers, atunci
+îl vom numi \textit{clasament parțial}.
 
 Notăm ordinea elementului $x$ în $\tau$ astfel:
-\[
+\begin{gather}
+\label{ord}
   ord(\tau, x)= \begin{dcases}
     |n + 1 - \tau(x)|    &, x \in \tau \\
     0                    &, x \in U \setminus \tau
   \end{dcases}
-\]
+\end{gather}
 
 \begin{definition}
 Fie $\tau$ si $\sigma$ două clasamente parțiale peste același univers $U$. Atunci distanța rank va fi
-\[
+\begin{gather}
   \Updelta(\tau, \sigma) = \smashoperator{\sum_{x \in \tau \cup \sigma}} |ord(\tau, x) - ord(\sigma, x)|
-\]
+\end{gather}
 \end{definition}
 
 Se observă faptul că, în calculul distanței rank, se ia în considerare ordinea definită mai sus
 și nu poziția. În primul rând, cum primele poziții sunt cele mai importante, distanța dintre două
-clasamente trebuie sa fie cu atât mai mare cu cât diferă mai mult începutul lor\cite{linguisticstructuresmarcus}.
+clasamente trebuie sa fie cu atât mai mare cu cât diferă mai mult începutul lor.\cite{linguisticstructuresmarcus}
 În al doilea rând, definiția funcției $ord$ pune accentul pe lungimea clasamentelor întrucăt putem
 presupune că un clasament mai lung a fost obținut în urma comparării mai multor obiecte din univers.
 Deci ordinea elementelor este mai solidă. Spre exemplu, dacă două clasamente de lungimi diferite au
@@ -52,84 +54,168 @@ diferență ce contribuie la calculul distanței rank totale.\cite{rankaggregati
 
 \subsection{Agregări cu distanța rank}
 O \textit{agregare de clasamente} reprezintă un singur clasament $\sigma$ astfel încât o anumită 
-metrică de la acesta la mulțimea de liste de agregat $T$ este minimă. Raportându-ne la distanța rank,
-putem defini formal o agregare astfel:
+metrică de la acesta la mulțimea de liste de agregat $T$ este minimă. Raportandu-ne la distanța
+rank avem\cite{rankdistance}:
 
 \begin{definition}
 Fie un set de clasamente $T = \{\tau_1, \tau_2, ..., \tau_m\}$ dintr-un univers $U$ și
 $\sigma = (\sigma_1 > \sigma_2 > ... > \sigma_k)$ un clasament astfel încât $\sigma_i \in U, 
 \forall 1 \leqslant i \leqslant k$. Definim distanța rank de la $\sigma$ la $T$ astfel:
-\[
+\begin{gather}
   \Updelta(\sigma, T) = \smashoperator{\sum_{i = 1}^{m}} \Updelta(\sigma, \tau_i)
-\]
+\end{gather}
 \end{definition}
 
 \begin{definition}
-Fie un set de clasamente $T = \{\tau_1, \tau_2, ..., \tau_m\}$ dintr-un univers 
-$U = \{x_1, x_2, ..., x_n \}$. Se numește agregare a mulțimii $T$ folosind distanța rank clasamentul
-$\sigma$, $\sigma_i \in U, \forall 1 \leqslant i \leqslant k$, cu propietatea că 
-$\Updelta(\sigma, T)$ este minim posibilă.
+\label{def:Aset}
+Se numește multime de agregari de lungime $k$ a mulțimii $T$ folosind distanța rank, setul
+$
+  A(T, k) = \{\sigma=(\sigma_1 > \sigma_2 > ... > \sigma_k) | \sigma_i \in U, 
+  \forall 1 \leqslant i \leqslant k$, si 
+  $\Updelta(\sigma, T)$ este minim posibila \}
 \end{definition}
 
-Definim următoarele matrici bidimensionale $W^l(i, j)$ cu $n$ linii și $n$ coloane. Fiecare celulă
-din fiecare matrice va semnifica costul total din distanța rank de la un clasament $\sigma$, de 
+
+\begin{problem}
+Fie $U$ un set de obiecte si $T = \{\tau_1, \tau_2, ..., \tau_m\}$ o multime de clasamente peste
+universul $U$. Vrem sa determinam multimea de agregari $A(T, k)$ pentru un k fixat. 
+\end{problem}
+
+Contruim următoarele matrici bidimensionale $W^k(i, j)$ cu $n$ linii și $n$ coloane. Fiecare celulă
+din fiecare matrice reprezintă costul total din distanța rank de la un clasament $\sigma$, de 
 lungime $l$, către o mulțime $T = \{\tau_1, \tau_2, ..., \tau_m\}$ fixată indus de plasarea 
 elementului $x_i \in U$ pe poziția $j$ în $\sigma$ \cite{rankaggregationproblem}. Se observă faptul
 că un clasament peste universul $U$ definit mai sus poate avea lungimea maxim $n$. Rezultă că 
 numărul de coloane al matricilor $W^t$ este egal cu $n$.
-\[
-  W^l(i, j) = \begin{dcases}
-    \smashoperator{\sum_{p=1}^{m}} | ord(p, i) - l + j |    &, j \leqslant l \\
-    \smashoperator{\sum_{p=1}^{m}} | ord(p, i) |            &, j > l
+\begin{gather}
+  \label{eq:wmatrix}
+  W^k(i, j) = \begin{dcases}
+    \smashoperator{\sum_{p=1}^{m}} | ord(p, i) - k + j |    &, j \leqslant k \\
+    \smashoperator{\sum_{p=1}^{m}} | ord(p, i) |            &, j > k
   \end{dcases}
-\]
+\end{gather}
 
 \begin{remark}
 Distanța de la un clasament $\sigma=(\sigma_1 > \sigma_2 > ... \sigma_k)$ la mulțimea $T$ este
 \[
   \Updelta(\sigma, T) = \smashoperator{\sum_{x_i \in U \cap \sigma}} W^k(i, \sigma(x_i)) +
       \smashoperator{\sum_{x_i \in U \setminus \sigma}} W^k(i, k + 1)
-\]unde $n$ este reprezintă numărul de obiecte din univers, iar $k < n$.
+\]unde $n$ reprezintă numărul de obiecte din univers, iar $k < n$.
 \end{remark}
 Se observă faptul că, în cazul în care $\sigma$ conține toate elementele din $U$, deci cazul $k = n$
-, formula se reduce la 
+, formula se devine
 \begin{gather}
   \label{eq:minimize}
   \Updelta(\sigma, T) = \smashoperator{\sum_{x_i \in U \cap \sigma}} W^k(i, \sigma(x_i))
 \end{gather}
 
-
 \subsection{Reducerea la o problemă de cuplaj perfect de cost minim}
-Fiecare matrice $W^l$ din secțiunea precedentă este calculată în mod independent de celelalte.
-Deci putem determina doar o singură matrice pentru o anumită lungime fixată $l$. Vom presupune
-în continuare ca vrem să calculăm agregările unui set de clasamente având lungimea egală cu numărul
-total de elemente din univers. Astfel, problema se reduce la găsirea unu clasament $\sigma$ ce 
+Fiecare matrice $W^l$ din secțiunea precedentă este calculată în mod independent de celelalte
+Deci putem determina doar o singură matrice pentru o anumită lungime fixată $l$. 
+Astfel, problema se reduce la găsirea unui clasament $\sigma$ ce 
 minimizează formula \eqref{eq:minimize}. Formal:
 
 \begin{problem}
+\label{def:problem}
 Fiind dată o matrice pătratică $W$, $W = (w_{i, j})_{1 \leqslant i,j \leqslant n}$ vrem să
 determinăm următoarea mulțime:
 \[
-  S = \{(i_1, i_2, ..., i_n) | (i_k \neq i_j, \forall k \neq j), (i_j \in U) \text{ și } \smashoperator{\sum_{j=1}^n} w_{i_j, j} \text{ este minim}\}
+  S = \{(i_1, i_2, ..., i_k) | (i_p \neq i_j, \forall p \neq j), (i_j \in U) \text{ și } \smashoperator{\sum_{j=1}^n} w_{i_j, j} \text{ este minim}\}
 \]
 \end{problem}
 
-Problema de mai sus se aseamănă cu o problemă de cuplaj perfect de cost minim întrucăt vrem să formăm
-perechi între obiectele dintr-un univers și pozițiile unui clasament de tip agregare, iar fiecare
-combinație are un anumit cost. Practic $(i_1, i_2, ..., i_n)$ reprezintă o permutare a elementelor
-din $U$.
+Problema de mai sus se aseamănă cu o problemă de cuplaj perfect de cost minim întrucăt vrem să 
+formăm perechi între obiectele dintr-un univers și pozițiile unui clasament de tip agregare, iar 
+fiecare combinație are un anumit cost. Practic $(i_1, i_2, ..., i_n)$ reprezintă o permutare a 
+elementelor din $U$.
 
 O solutie pentru a rezolva problema precedenta este aplicarea algoritmul Ungar prezentat de Khun \cite{hungarianmethod}.
 Altfel, putem considera matricea $W$ ca fiind o matrice de costuri intr-un graf bipartit $G$ pe care
 aplicam un algoritm clasic de gasire a cuplajului maxim de cost minim. Conform \cite{flowassignment}
 aceasta problema poate fi rezolvata in timp polinomial $\mathcal{O}(n^3)$ construind o retea de flux
-cu capacitati convenabile si prin gasirea unor drumuri de augmentare minime din punct de vedere
-al costului folosind algoritmul lui Dijsktra\cite{dijkstra}.
+cu capacitati convenabile si prin gasirea unor drumuri de augmentare minime, din punct de vedere
+al costului, folosind algoritmul lui Dijkstra\cite{dijkstra}.
+
+Toate aceste rezolvari determina o singura agregare dar nu si pe toate, adica multimea $A(T, k)$ din
+definitia \ref{def:Aset}. In continuare prezentam o metoda de determinare a tuturor agregarilor 
+bazata pe gasirea tuturor cuplajelor perfecte de cost minim dintr-un graf, metoda prezentata in \cite{allmatchings}.
+Algoritmul ruleaza intr-un timp polinomial. Particularizam problemele si algoritmii din articolul 
+\textit{A generalization of the assignment problem, and its application to the rank aggregation 
+problem} \cite{allmatchings} pentru Problema \ref{def:problem}.
 
 
 \subsection{Calcularea tuturor agregărilor optime}
+Reamintim faptul ca dorim sa calculam multimea de agregari $A(T, k)$, stiind costul plasarii 
+fiecarui element pe fiecare pozitie, memorat in matricea $W^k$ calculata la \eqref{eq:wmatrix}. 
+Reformulam problema in elemente de teoria grafurilor. Astfel, asociem Problemei \ref{def:problem} 
+un graf $G = (V, E, c, w)$, unde $V$ reprezintă multimea de noduri, $E$ este multimea de muchii iar
+$c \colon E \to \mathbb{N}$ si $w \colon E \to \mathbb{N}$ reprezinta capacitatea unei muchii
+respectiv costul acesteia. Legaturile intre Problema \ref{def:problem} si graful $G$ sunt:
+\begin{itemize}
+  \item $V = \{src, dst\} \cup U \cup \{1, 2,..., k\}$
+  \item $E = \{(src, x_i) | x_i \in U\} \cup \{(x_i, j) | x_i \in U \text{ si } j = 1,...,k\} \cup 
+    \{(j, dst) | j = 1,...,k\}$  
+  \item $c(muchie) = 1, \forall muchie \in E$:
+  \item functia $w$ astfel:
+  \begin{itemize}
+    \item $w((src, x_i)) = 0, \forall x_i \in U$
+    \item $w((x_i, j)) = W^k(i, j), \forall x_i \in U, j = 1,...,k$
+    \item $w((j, dst)) = 0, j = 1,...,k$
+  \end{itemize}
+\end{itemize}
 
+Se poate calcula usor in acest graf un cuplaj maxim de cost minim folosind algoritmi clasici (metoda
+Ungara \cite{hungarianmethod} sau prin aflarea fluxului maxim de cost minim\cite{flowassignment}).
+Notam prin $solve(W)$ un asemenea algoritm.
+Fie solutia $M = \{(x, j) | x \in U \text{ si } j = 1,...,k\}$. Urmatorul pas este aflarea unei
+solutii $M'$ diferite de $M$.
 
+\begin{proposition}
+Doua cuplaje $M$ si $M'$ sunt diferite daca exista cel putin o pereche $(x, y)$ care se afla in $M$
+si nu se afla in $M'$.
+\end{proposition}
+
+Astfel, propunem urmatorul algoritm, adaptat din \cite{allmatchings}, prin care cautam o a doua
+solutie $M'$ fixand cate o muchie candidat $(x, y)$ prin care $M'$ sa difere de $M$. Setand costul
+muchiei $(x, y)$ pe o valoare infinita, avem garantia ca aceasta nu va fi luata in considerare in 
+constructia lui $M'$.
+\begin{algorithm}
+\label{P}
+\caption{Calculeaza M'}
+\begin{algorithmic}
+\REQUIRE W, M
+\ENSURE M'
+  \STATE $s \gets \sum_{(u, v) \in M} w_{uv}$
+  \FORALL{$(x, y) \in M$}
+    \STATE $temp \gets w_{xy}$
+    \STATE $w_{xy} \gets \infty$
+    \STATE $M' \gets solve(W)$
+    \IF{$M' \neq \emptyset \text{ si } \sum_{(u, v) \in M'} w_{uv} = s$}
+    \RETURN $M'$
+    \ELSE
+    \STATE $w_{xy} \gets temp$
+    \ENDIF
+  \ENDFOR
+  \RETURN $\emptyset$
+\end{algorithmic}
+\end{algorithm}
+
+Algoritmul returneaza fie multimea vida, fie o solutie $M'$ astfel incat exista o pereche $(x, y)
+\in M \setminus M'$. Se poate imparti problema initiala in doua subprobleme disjuncte $P_1$ si
+$P_2$:
+\begin{itemize}
+  \item $P_1\colon$ multimea tuturor cuplajelor ce contin muchia $(x, y)$
+  \item $P_2\colon$ multimea tuturor cuplajelor ce \textbf{nu} contin muchia $(x, y)$
+\end{itemize}
+
+Evident, exista deja cate o solutie calculata pentru cele 2 subprobleme si anume $M \in P_1$ si 
+$M' \in P_2$. Prim urmare, se poate aplica Algoritmul \ref{P} in mod recursiv pentru fiecare dintre 
+aceste subprobleme pentru a determina intreaga multime de solutii. Aceasta abordare conduce la
+construirea unei structuri de cautare arborescente in care radacina reprezinta problema initiala
+\ref{defproblem}, iar fiecare nod intern constituie o impartire pe subprobleme dupa o pereche 
+$(x, y)$. Solutia finala se construieste traversand arborele in adancime si pastrand toate solutile
+parțiale calculate la fiecare pas. Nu se va genera aceeasi solutie de mai multe ori prin faptul ca
+problemele $P_1$ si $P_2$ sunt complet disjuncte.
 
 \section{Determinarea tuturor agregărilor producțiilor de cuvinte}
 În capitolul precedent am prezentat o metoda de a combina o limbă romanică modernă si limba latină
