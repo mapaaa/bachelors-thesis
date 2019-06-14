@@ -56,8 +56,8 @@ metrică de la acesta la mulțimea de liste de agregat $T$ este minimă. Raport�
 putem defini formal o agregare astfel:
 
 \begin{definition}
-Fie un set de clasamente $T = \{\tau_1, \tau_2, ..., \tau_m\}, m = |T|$ dintr-un univers $U$ și
-$\sigma = (\sigma_1 > \sigma_2 > ... > \sigma_k) $ un clasament astfel încât $\sigma_i \in U, 
+Fie un set de clasamente $T = \{\tau_1, \tau_2, ..., \tau_m\}$ dintr-un univers $U$ și
+$\sigma = (\sigma_1 > \sigma_2 > ... > \sigma_k)$ un clasament astfel încât $\sigma_i \in U, 
 \forall 1 \leqslant i \leqslant k$. Definim distanța rank de la $\sigma$ la $T$ astfel:
 \[
   \Updelta(\sigma, T) = \smashoperator{\sum_{i = 1}^{m}} \Updelta(\sigma, \tau_i)
@@ -65,10 +65,63 @@ $\sigma = (\sigma_1 > \sigma_2 > ... > \sigma_k) $ un clasament astfel încât $
 \end{definition}
 
 \begin{definition}
-Fie un set de clasamente $T = \{\tau_1, \tau_2, ..., \tau_m\}, m = |T|$ dintr-un univers $U$. Se
-numește agregare a mulțimii $T$ folosind distanța rank clasamentul $\sigma$ cu propietatea că 
-$\Updelta(\sigma, T)$ este minim posibil.
+Fie un set de clasamente $T = \{\tau_1, \tau_2, ..., \tau_m\}$ dintr-un univers 
+$U = \{x_1, x_2, ..., x_n \}$. Se numește agregare a mulțimii $T$ folosind distanța rank clasamentul
+$\sigma$, $\sigma_i \in U, \forall 1 \leqslant i \leqslant k$, cu propietatea că 
+$\Updelta(\sigma, T)$ este minim posibilă.
 \end{definition}
+
+Definim următoarele matrici bidimensionale $W^l(i, j)$ cu $n$ linii și $n$ coloane. Fiecare celulă
+din fiecare matrice va semnifica costul total din distanța rank de la un clasament $\sigma$, de 
+lungime $l$, către o mulțime $T = \{\tau_1, \tau_2, ..., \tau_m\}$ fixată indus de plasarea 
+elementului $x_i \in U$ pe poziția $j$ în $\sigma$ \cite{rankaggregationproblem}. Se observă faptul
+că un clasament peste universul $U$ definit mai sus poate avea lungimea maxim $n$. Rezultă că 
+numărul de coloane al matricilor $W^t$ este egal cu $n$.
+\[
+  W^l(i, j) = \begin{dcases}
+    \smashoperator{\sum_{p=1}^{m}} | ord(p, i) - l + j |    &, j \leqslant l \\
+    \smashoperator{\sum_{p=1}^{m}} | ord(p, i) |            &, j > l
+  \end{dcases}
+\]
+
+\begin{remark}
+Distanța de la un clasament $\sigma=(\sigma_1 > \sigma_2 > ... \sigma_k)$ la mulțimea $T$ este
+\[
+  \Updelta(\sigma, T) = \smashoperator{\sum_{x_i \in U \cap \sigma}} W^k(i, \sigma(x_i)) +
+      \smashoperator{\sum_{x_i \in U \setminus \sigma}} W^k(i, k + 1)
+\]unde $n$ este reprezintă numărul de obiecte din univers, iar $k < n$.
+\end{remark}
+Se observă faptul că, în cazul în care $\sigma$ conține toate elementele din $U$, deci cazul $k = n$
+, formula se reduce la 
+\begin{gather}
+  \label{eq:minimize}
+  \Updelta(\sigma, T) = \smashoperator{\sum_{x_i \in U \cap \sigma}} W^k(i, \sigma(x_i))
+\end{gather}
+
+
+\subsection{Reducerea la o problemă de cuplaj perfect de cost minim}
+Fiecare matrice $W^l$ din secțiunea precedentă este caluculată în mod independent de celelalte.
+Deci putem determina doar o singură matrice pentru o anumită lungime fixată $l$. Vom presupune
+în continuare ca vrem să calculăm agregările unui set de clasamente având lungimea egală cu numărul
+total de elemente din univers. Astfel, problema se reduce la găsirea unu clasament $\sigma$ ce 
+minimizează formula \eqref{eq:minimize}. Formal:
+
+\begin{problem}
+Fiind dată o matrice pătratică $W$, $W = (w_{i, j})_{1 \leqslant i,j \leqslant n}$ vrem să
+determinăm următoarea mulțime:
+\[
+  S = \{(i_1, i_2, ..., i_n) | (i_k \neq i_j \forall k \neq j), (i_j \in U) \text{ și } \smashoperator{\sum_{j=1}^n} w_{i_j, j} \text{ este minim}\}
+\]
+\end{problem}
+
+Problema de mai sus se aseamănă cu o problemă de cuplaj perfect de cost minim întrucăt vrem să formăm
+perechi între obiectele dintr-un univers și pozițiile unui clasament de tip agregare, iar fiecare
+combinație are un anumit cost. Practic $(i_1, i_2, ..., i_n)$ reprezintă o permutare a elementelor
+din $U$.
+
+\subsection{Calcularea tuturor agregărilor optime}
+
+
 
 \section{Determinarea tuturor agregărilor producțiilor de cuvinte}
 În capitolul precedent am prezentat o metoda de a combina o limbă romanică modernă si limba latină
@@ -78,9 +131,19 @@ mică. Vom considera aceste liste de cuvinte ca fiind clasamente. Pentru fiecare
 agrega clasamentele produse din fiecare limbă romanică modernă \textit{(ro, it, fr, es, pt)}.
 Se observă faptul că pot exista mai multe astfel de agregări așa că ne propunem să le aflăm pe toate
 într-un mod eficient din punct de vedere al complexității timp. Alegem să luăm în considerare
-doar primele 5 cele mai bune cuvinte din fiecare set. Astfel, vom avea 
-
-
-
-\subsection{Reducerea la o problemă de cuplaj perfect de cost minim}
-\subsection{Calcularea tuturor agregărilor optime}
+doar primele 5 cele mai bune cuvinte din fiecare set. Astfel, pentru un singur cuvânt latinesc, vom 
+avea:
+\begin{gather*}
+  R = \{r_1, r_2, ..., r_k\}, \text{clasamentele produse din ro, it, fr, es, pt} \\
+  k = |R|, 1 \leqslant k \leqslant 5 \\
+  U = \smashoperator{\bigcup_{i = 1}^{k}} r_i \text{ universul de cuvinte} \\
+  n = |U|
+\end{gather*}
+Definim o matrice bidimensională de $k$ linii și $n$ coloane în care calculăm ordinea fiecărui 
+cuvânt din univers în fiecare clasament dat:
+\[
+  ord[i][j] = \begin{dcases}
+    |6 - r_i(x_j)|    &, x_j \in r_i \\
+    0                 &, x_j \in U \setminus r_i 
+  \end{dcases}
+\]
