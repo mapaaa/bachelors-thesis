@@ -181,10 +181,10 @@ muchiei $(x, y)$ pe o valoare infinita, avem garantia ca aceasta nu va fi luata 
 constructia lui $M'$.
 \begin{algorithm}
 \label{P}
-\caption{Calculeaza M'}
-\begin{algorithmic}
-\REQUIRE W, M
-\ENSURE M'
+\caption{anotherSolution}
+\begin{algorithmic}[1]
+\REQUIRE $W, M$
+\ENSURE $M'$
   \STATE $s \gets \sum_{(u, v) \in M} w_{uv}$
   \FORALL{$(x, y) \in M$}
     \STATE $temp \gets w_{xy}$
@@ -204,18 +204,78 @@ Algoritmul returneaza fie multimea vida, fie o solutie $M'$ astfel incat exista 
 \in M \setminus M'$. Se poate imparti problema initiala in doua subprobleme disjuncte $P_1$ si
 $P_2$:
 \begin{itemize}
-  \item $P_1\colon$ multimea tuturor cuplajelor ce contin muchia $(x, y)$
-  \item $P_2\colon$ multimea tuturor cuplajelor ce \textbf{nu} contin muchia $(x, y)$
+  \item $P_1\colon$ multimea tuturor cuplajelor ce contin muchia $(x, y)$ \\
+    In acest caz fortam pastrarea perechii in solutie prin setarea tuturor celorlalte valori de pe
+    linia $x$, coloana $y$ pe o valoare infinita in matricea $W$:
+    $w_{iy} = w_{xj}, \forall i = 1,..,n \text{, }i \neq x  \text{ si } j = 1,...,n \text{, }j \neq y$
+  \item $P_2\colon$ multimea tuturor cuplajelor ce \textbf{nu} contin muchia $(x, y)$ \\
+    In acest caz perechea $(x, y)$ nu va mai fi niciodata aleasa intr-o solutie daca costul acesteia
+    este infinit:
+    $w_{xy} = \infty$
 \end{itemize}
 
 Evident, exista deja cate o solutie calculata pentru cele 2 subprobleme si anume $M \in P_1$ si 
-$M' \in P_2$. Prim urmare, se poate aplica Algoritmul \ref{P} in mod recursiv pentru fiecare dintre 
+$M' \in P_2$. Prim urmare, se poate aplica Algoritmul 1 in mod recursiv pentru fiecare dintre 
 aceste subprobleme pentru a determina intreaga multime de solutii. Aceasta abordare conduce la
 construirea unei structuri de cautare arborescente in care radacina reprezinta problema initiala
-\ref{defproblem}, iar fiecare nod intern constituie o impartire pe subprobleme dupa o pereche 
+\ref{def:problem}, iar fiecare nod intern constituie o impartire pe subprobleme dupa o pereche 
 $(x, y)$. Solutia finala se construieste traversand arborele in adancime si pastrand toate solutile
 parțiale calculate la fiecare pas. Nu se va genera aceeasi solutie de mai multe ori prin faptul ca
 problemele $P_1$ si $P_2$ sunt complet disjuncte.
+
+\begin{algorithm}
+\caption{dfsAgregare}
+\begin{algorithmic}[1]
+\REQUIRE $S, M, W$
+  \STATE $s \gets \sum_{(u, v) \in M} w_{uv}$
+  \STATE $M' \gets another_solution(W, M)$
+  \IF{$M' \neq \emptyset$}
+    \RETURN
+  \ELSE
+    \STATE $S \gets M'$
+    \STATE $(x, y) \in M \setminus M'$
+    \STATE $w_{xy} \gets \infty$
+    \STATE $dfsAgregare(S, M', W)$
+    \STATE $w_{iy} \gets w_{xj}, \forall i = 1,..,n \text{, }i \neq x  \text{ si } j = 1,...,n \text{, }j \neq y$
+    \STATE $dfsAgregare(S, M' \setminus (x, y), W)$
+  \ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Calculeaza toate cuplajele perfecte de cost minim}
+\begin{algorithmic}[1]
+\REQUIRE $W$
+\ENSURE $S$
+  \STATE $S \gets \emptyset$
+  \STATE $M \gets solve(W)$
+  \STATE $S \gets S \cup M$
+  \STATE $dfsAgregare(S, M, W)$
+  \RETURN $S$
+\end{algorithmic}
+\end{algorithm}
+
+Algoritmul 3 determina toate cuplajele perfecte de cost minim pornind de la o matrice de costuri
+$W$. Calculand matricea $W$ dupa formula \eqref{eq:wmatrix}, atunci multimea $S$ determinata de
+algoritm este chiar solutia cautata in Problema \ref{def:problem}. Cateva aspecte legate de
+complexitatea metodei prezentate: \\
+Fie $x = |S|$, numarul total de solutii pentru o anumita problema.
+\begin{itemize}
+  \item Pentru fiecare solutie nou calculata, se construiesc doua noi alte probleme. In total se vor
+    rezolva maxim $2*x+1$ subprobleme.
+  \item O subproblema necesita gasirea unui cuplaj de cost minim ce se poate calcula intr-un timp
+    polinomial folosind metoda Ungara\cite{hungarianmethod} ori un algoritm clasic de determinare
+    a fluxului maxim de cost minim intr-un graf bipartit\cite{flowassignment}.
+\end{itemize}
+Intuitiv, putem afirma ca Algoritmul 3 ruelaza intr-un timp polinomial. Complexitatea acestuia a
+fost demonstrata in \cite{allmatchings} ca fiind $\mathcal{O}((2x+1)k^3n\log(n+k))$.
+
+Subproblemele sunt complet independente de complementarele lor. Prin urmare, rezolvarile acestora se
+pot rula in paralel pe mai multe fire de executie. In experimentele rulate am ales sa pornim
+un nou fir de executie pentru fiecare subproblema de tipul $P_2$ pana la un anumit nivel din
+arborele de cautare determinat in functie de procesorul folosit. Subproblema de tipul $P_1$
+a ramas sa ruleze pe firul de executie principal.
+
 
 \section{Determinarea tuturor agregărilor producțiilor de cuvinte}
 În capitolul precedent am prezentat o metoda de a combina o limbă romanică modernă si limba latină
