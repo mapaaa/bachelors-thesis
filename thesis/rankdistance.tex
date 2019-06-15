@@ -2,8 +2,17 @@
 Am văzut cum putem obține producții de cuvinte combinând câte o singură limbă romanică cu 
 limba latină. Pentru a îmbunătății rezultatele vrem să folosim informația din mai multe 
 limbi romanice moderne. Astfel, fiecare clasificator întoarce o listă ordonată de cuvinte latinești, 
-pe prima poziție aflându-se perechea cognate cu cea mai mare probabilitate. Prin agregarea 
-acestora cu o anumită metrică vom obține cele mai probabile perechi cognate.
+pe prima poziție aflându-se etimonul latinesc cu cea mai mare probabilitate. Prin agregarea 
+acestora cu o anumită metrică vom obține o lista sortata cu mai probabile cuvinte latinești. Metrica
+folosita este distanta rank \cite{rankdistance} întrucat s-au obtinut rezultate bune in alte 
+probleme de natura lingvistica precum determinarea similitudinii silabice a limbilor romanice 
+\cite{syllabicsim}, \cite{simnat}.
+
+In primul rand vom defini ce inseamna o lista ordonata de elemente. In al doilea rand, vom explica
+distanta rank intre doua clasamente si intre un clasament si o multime de clasamente. Apoi vom
+prezenta o metoda de aflare a tuturor agregarilor unei multimi de mai multe clasamente folosind
+distanta rank. In final, vom prelucra multimea de agregari bazat pe un sistem de vot pentru a 
+determina \textbf{o singura lista ordonata} de posibile etimoane latinesti.
 
 \section{Clasamente și distanța rank}
 Un \textit{clasament} este o listă ordonată de obiecte după un anumit criteriu, pe prima poziție 
@@ -124,24 +133,24 @@ determinăm următoarea mulțime:
 \]
 \end{problem}
 
-Problema de mai sus se aseamănă cu o problemă de cuplaj perfect de cost minim întrucăt vrem să 
-formăm perechi între obiectele dintr-un univers și pozițiile unui clasament de tip agregare, iar 
-fiecare combinație are un anumit cost. Practic $(i_1, i_2, ..., i_n)$ reprezintă o permutare a 
+Problema de mai sus se aseamănă cu o problemă de cuplaj de dimensiune $k$ de cost minim întrucăt 
+vrem să formăm perechi între obiectele dintr-un univers și pozițiile unui clasament de tip agregare, 
+iar fiecare combinație are un anumit cost. Practic $(i_1, i_2, ..., i_n)$ reprezintă o permutare a 
 elementelor din $U$.
 
 O solutie pentru a rezolva problema precedenta este aplicarea algoritmul Ungar prezentat de Khun \cite{hungarianmethod}.
 Altfel, putem considera matricea $W$ ca fiind o matrice de costuri intr-un graf bipartit $G$ pe care
-aplicam un algoritm clasic de gasire a cuplajului maxim de cost minim. Conform \cite{flowassignment}
-aceasta problema poate fi rezolvata in timp polinomial $\mathcal{O}(n^3)$ construind o retea de flux
-cu capacitati convenabile si prin gasirea unor drumuri de augmentare minime, din punct de vedere
-al costului, folosind algoritmul lui Dijkstra\cite{dijkstra}.
+aplicam un algoritm clasic de gasire a cuplajului maxim de cost minim (din care luam doar $k$ perechi). 
+Conform \cite{flowassignment} aceasta problema poate fi rezolvata in timp polinomial 
+$\mathcal{O}(n^3)$ construind o retea de flux cu capacitati convenabile si prin gasirea unor drumuri 
+de augmentare minime, din punct de vedere al costului, folosind algoritmul lui Dijkstra\cite{dijkstra}.
 
 Toate aceste rezolvari determina o singura agregare dar nu si pe toate, adica multimea $A(T, k)$ din
-definitia \ref{def:Aset}. In continuare prezentam o metoda de determinare a tuturor agregarilor 
-bazata pe gasirea tuturor cuplajelor perfecte de cost minim dintr-un graf, metoda prezentata in \cite{allmatchings}.
-Algoritmul ruleaza intr-un timp polinomial. Particularizam problemele si algoritmii din articolul 
-\textit{A generalization of the assignment problem, and its application to the rank aggregation 
-problem} \cite{allmatchings} pentru Problema \ref{def:problem}.
+definitia \ref{def:Aset}. In continure prezentam o metoda de determinare a tuturor agregarilor 
+bazata pe gasirea tuturor cuplajelor \textit{perfecte} de cost minim dintr-un graf, metoda 
+prezentata in \cite{allmatchings}. Algoritmul ruleaza intr-un timp polinomial. Particularizam 
+problemele si algoritmii din articolul  \textit{A generalization of the assignment problem, and its
+application to the rank aggregation  problem} \cite{allmatchings} pentru Problema \ref{def:problem}.
 
 
 \subsection{Calcularea tuturor agregărilor optime}
@@ -152,20 +161,22 @@ un graf $G = (V, E, c, w)$, unde $V$ reprezintă multimea de noduri, $E$ este mu
 $c \colon E \to \mathbb{N}$ si $w \colon E \to \mathbb{N}$ reprezinta capacitatea unei muchii
 respectiv costul acesteia. Legaturile intre Problema \ref{def:problem} si graful $G$ sunt:
 \begin{itemize}
-  \item $V = \{src, dst\} \cup U \cup \{1, 2,..., k\}$
+  \item $V = \{src, dst\} \cup U \cup \{1, 2,..., k, k+1\}$
   \item $E = \{(src, x_i) | x_i \in U\} \cup \{(x_i, j) | x_i \in U \text{ si } j = 1,...,k\} \cup 
     \{(j, dst) | j = 1,...,k\}$  
-  \item $c(muchie) = 1, \forall muchie \in E$:
+  \item $c(muchie) = 1, \forall muchie = (x, j) \in E, j \neq k+1$
+  \item $c(muchie) = \infty, \forall muchie = (x, k+1) \in E$
   \item functia $w$ astfel:
   \begin{itemize}
     \item $w((src, x_i)) = 0, \forall x_i \in U$
-    \item $w((x_i, j)) = W^k(i, j), \forall x_i \in U, j = 1,...,k$
-    \item $w((j, dst)) = 0, j = 1,...,k$
+    \item $w((x_i, j)) = W^k(i, j), \forall x_i \in U, j = 1,...,k+1$
+    \item $w((j, dst)) = 0, j = 1,...,k+1$
   \end{itemize}
 \end{itemize}
 
-Se poate calcula usor in acest graf un cuplaj maxim de cost minim folosind algoritmi clasici (metoda
-Ungara \cite{hungarianmethod} sau prin aflarea fluxului maxim de cost minim\cite{flowassignment}).
+Potrivirea unui element $x$ cu pozitia $k+1$ va semnifica excluderea acestuia din agregare ce 
+afecteaza distanta rank dintre un clasament ce nu contine elementul $x$ si multimea intreaga $T$.
+Se poate calcula usor in acest graf un flux maxim de cost minim folosind algoritmi clasici\cite{flowassignment}).
 Notam prin $solve(W)$ un asemenea algoritm.
 Fie solutia $M = \{(x, j) | x \in U \text{ si } j = 1,...,k\}$. Urmatorul pas este aflarea unei
 solutii $M'$ diferite de $M$.
@@ -294,10 +305,44 @@ avea:
   n = |U|
 \end{gather*}
 Definim o matrice bidimensională de $k$ linii și $n$ coloane în care calculăm ordinea fiecărui 
-cuvânt din univers în fiecare clasament dat:
+cuvânt din universul unui cuvant în fiecare clasament dat:
 \[
   ord[i][j] = \begin{dcases}
     |6 - r_i(x_j)|    &, x_j \in r_i \\
     0                 &, x_j \in U \setminus r_i 
   \end{dcases}
 \]
+
+Calculam apoi matricea de costuri $W^5$ conform formulei de la \ref{eq:wmatrix} pentru a afla cum
+este afectat costul final daca un anumit cuvant $x_i \in U$ este plasat pe pozitia $j$. Aceasta 
+poziitie poate sa fie mai mare decat $5$ dar conform formulei construite, nu se va face nicio 
+distinctie intre a plasa un cuvant pe pozitia $6$ spre exemplu, sau pozitia $7$, considerandu-se
+ca respectivul element nu va apartine in agregarea finala de lungime $5$.
+
+Este limpede ca se poate aplica acum Algoritmul 3 prezentat in sectiunea precedenta pentru a afla
+multimea $S = \{\sigma_1, \sigma_2, ..., \sigma_t\}$ de agregari posibile. Propunem combinarea 
+solutiilor din $S$ printr-un sistem de vot. Fiecare cuvant va primi un scor bazat pe pozitiile pe 
+care se afla in clasamentele din $S$.
+
+\begin{gather*}
+  scor \colon U \to \mathbb{N} \\
+  scor(x_i) = \smashoperator{\sum_{j=1}^{|S|}} \sigma_j(x_i), \forall x_i \in U
+\end{gather*}
+
+Putem in sfarsit sa construim lista finala, introdusa vag la inceputul capitolului, de cuvinte 
+ordonate in functie de probabiliatea de a  fi etimonul latinesc al unor anumite cuvinte moderne 
+din \textit{ro, it, fr, es, pt}. Pe prima pozitie se va afla cuvantul produs cu scorul cel mai mic,
+adica cel ce se afla pe primele pozitii in clasamentele $S$, pe a doua pozitie, cel cu urmatorul cel
+mai mic scor, si asa mai departe. In cazul in care exista mai multe cuvinte cu acelasi scor, le 
+vom pastra pe toate pe aceeasi pozitie si le vom filtra manual folosind reguli lingvistice.
+
+\begin{gather*}
+  F = (x_1 > x_2 > x_3 > x_4 > x_5) \\
+  x_1 = \min (scor(x)) \\
+  x_2 = \min_{x, x \neq x_1} (scor(x)) \\
+  x_3 = \min_{x, x \neq x_1, x_2} (scor(x)) \\
+  x_4 = \min_{x, x \neq x_1, x_2, x_3} (scor(x)) \\
+  x_5 = \min_{x, x \neq x_1, x_2, x_3, x_4} (scor(x)) \\
+  \{x_1, x_2, x_3, x_4, x_5\} \subseteq U
+\end{gather*}
+
