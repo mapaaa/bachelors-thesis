@@ -1,1 +1,63 @@
-\chapter{Reconstrucție de cuvinte}
+\chapter{Reconstrucție de cuvinte latinesti}
+Pornim de la formele cuvintelor din limbile romanice moderne. Fiind date mai multe perechi de cuvinte
+cognate vrem sa deducem forma latinescului stramos comun. Aplicam o metoda similara cu cea folosita
+in \cite{theone}. Ca si in \cite{theone}, ne bazam pe faptul ca modificarile ortografice sunt strans
+legate de evolutia cuvintelor. Deci incercam sa reconstruim proto-cuvinte din forma ortografica a
+cuvintelor moderne.
+
+In final, dorim sa obtinem o lista cu $n$ cele mai bune predictii pe care mai apoi sa le prelucam
+intr-o maniera atat automata cat si manuala pentru a obtine cele mai bune rezultate.
+
+\section{Prezentare generala}
+Dat fiind mai multe seturi de date de cuvinte cognate din limbi romanice moderne, metoda de 
+reconstructie va incerca sa aproximeze forma latinescului de provenienta. Vom folosi: \textit{Romana},
+\textit{Italiana}, \textit{Franceza}, \textit{Spaniola}, \textit{Portugheza}, iar seturile de date
+vor avea forma $(\textit{cuvant modern}, \textit{cuvant latinesc})$. Din acestea, modelul va invata 
+pe baza campurilor conditionate aleatoare (\textit{conditional random fields} sau prescurtat CRF) 
+diverse schimbari de ortografie suferite de cuvintele latinesti pentru a le forma pe cele moderne. 
+Apoi, vom aplica o tehnica de agregare a acestor rezultate pentru a combina informatie din toate 
+limbile. In final, vom folosi mai apoi aceste schimbari pentru a oferi variante de cuvinte ce 
+completeaza anumite seturi de date.
+
+Pasii algoritmului pentru o anumita limba romanica moderna sunt:
+
+\begin{enumerate}
+  \item Pentru fiecare pereche $(\textit{cuvant modern}, \textit{cuvant latinesc})$, vom alinia
+    cele doua cuvinte pentru a intelege ce semne ortografice s-au pastrat, schimbat sau elidat.
+  \item Pregatim antrenarea sistemului CRF: extragem caracteristici din alinierile fiecarei perechi.
+  \item Rulam sistemul CRF si obtinem liste de $n$ cele mai bune productii sortate in functie de
+    probabilitatea lor.
+\end{enumerate}
+
+\section{Aliniere}
+Avem perechi de tipul $(\textit{cuvant modern}, \textit{cuvant latinesc})$ pe care vrem sa le aliniem.
+Nu orice aliniere ne ofera informatie valida. Avem nevoie de asa numitele alinieri optime, in care
+numarul de diferente dintre cele doua cuvinte este minim. Vom aplica algoritmul de aliniere 
+Needleman-Wunsch\cite{needle} din bioinfomatica, folosit cu succes si in probleme de procesare al
+limbajului natural. 
+
+\subsection{Needleman-Wunsch}
+Algoritmul de aliniere Needleman-Wunsch provine din bioinfomatica, mai exact din alinierea secventelor
+de proteine sau nucleotide. Determinarea alinierilor se face printr-o tehnica
+de programare dinamica. Asadar, problema initiala va fi impartita in subprobleme fie deja calculate
+fie mai usor de calculat. De fiecare cand vom spune alinieri ne vom referi doar la alinieri de tip
+Needleman-Wunsch.
+
+Avem doua siruri $a=a_1a_2...a_n$ si $b=b_1b_2...b_m$ de caractere de lungime $n$ respectiv $m$. 
+Vrem sa aliniem sirul $b$ pentru a se potrivi cu sirul $a$.  
+
+Exista 3 tipuri de operatii intr-o aliniere la o anumita pozitie $i$:
+\begin{enumerate}
+  \item \textbf{Potrivire}, caracterele aliniate se potrivesc: $a_i=b_i$
+  \item \textbf{Nepotrivire}, caracterele aliniate nu se potrivesc: $a_i \neq b_i$
+  \item \textbf{Spatiu}, caracterul din primul sir nu se aliniaza cu niciun caracter din al doilea sir
+    sau invers;
+\end{enumerate}
+
+Se observa ca in cazul operatiei de tipul 3, caracterele din dreapta pozitiei curente $i$ se vor
+deplasa cu o pozitie.
+
+\section{Campuri conditionate aleatoare}
+\subsection{Generalitati}
+\subsection{Aplicate pe problema reconstructiei cuvintelor}
+

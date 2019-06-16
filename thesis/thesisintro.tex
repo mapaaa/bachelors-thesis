@@ -1,1 +1,94 @@
 \chapter{Introducere}
+Limbajul unei tari se afla in continua schimbare datorita mai multor cauze precum cauze sociale, 
+economice, migratia populatiei, progresele in stiinta, technologie si medicina. De-a lungul timpului,
+modificarile s-au petrecut inevitabil si nu au fost neaparat reglementate de experti in domeniu.
+Astfel a aparut o noua ramura a lingvisticii ce studiaza sistematic aceste transformari incercand
+sa gaseasca sabloane, reguli si sa puna o ordine asupra schimbarilor lexicale, fonetice, semantice
+si sintactice. Cateva exemple clasice ar fi determinarea etimologiei unui cuvant (romanescul
+\textit{genunchi} provine din latinescul \textit{genuclum}) sau determinarea similaritatii
+limbajelor.
+
+De cele mai multe ori, popoare ce vorbeau aceeasi limba s-au despartit si au evoluat diferit, aparand
+limbaje derivate. Ne putem da seama de gradul de rudenie a acestora prin identificarea
+formelor \textbf{cognate} (grupuri de cuvinte ce au derivat din acelasi etimon). In alte cazuri,
+limbiile au imprumutat cuvinte intre ele fie luandu-le ca atare (cuvantul japonez \textit{sushi}),
+fie modificand forma lor (romanescul \textit{cafea} din turcescul \textit{kahve}). Astfel, se pot 
+descoperi chiar relatii de natura istorica intre limbi si popoarele ce le folosesc. Spre exemplu,
+exista peste 200 de cuvinte ce se regasesc in toate limbile romanice moderne mai putin limba
+romana. Este greu de crezut ca o parte din aceste cuvinte nu au existat in lexicul limbii romane
+la un moment dat. Fischer\cite{fischer} a identificat cateva cauze ce au condus la disparitia acestor cuvinte
+si inlocuirea acesora prin cuvinte cu alte etimologi: cauze externe, social-econimice, schimbarea
+ocupatiilor romanilor, intreruperea Romaniei cu lumea Occidentala, dezvoltarea limbii romane departe
+de nucelul romanic si asa mai departe.
+
+\section{Reconstructia limbajelor folosind metode comparative}
+Lingvisticii istorici se ocupa cu cercetarea schimbarilor limbilor de-a lungul timpului. 
+O preocupare majora a acestora o reprezinta producerea de cuvinte inrudite. Ei folosesc
+metode comparative prin care analizeaza modificarile limbajelor efectuand comparatii intre limibi
+inrudite pentru a deduce, printr-o inginerie inversa, propietati ale limbii stramos comune.\cite{weissbook}
+Practic, se incearca determinarea grupurilor de cuvinte cognate si gasirea unor reguli prin care
+au fost obtinute din limba stramos. Acestea nu sunt neaparat atestate, cele mai multe dintre ele 
+denumindu-se \textbf{proto-limbaje}. In consecinta, rezultatele obtinute sunt foarte greu de demonstrat
+pentru ca nu exista dovezi arheologice concrete.
+
+Asemenea metode au dat rezolvate satisfacatoare, reusind sa determine structura famililor de limbi
+europene. Mai mult, reconstructia proto-limbajul \textbf{Indo-European} considerat cel mai vechi
+limbaj cunoscut, a fost posibila prin punerea in corelatie cu limbajele derivate din acesta 
+(proto-limbajul German, proto-limbajul Indo-Iranian).\cite{protostuff} In plus, metodele comparative
+au avut avut succes si in analiza altor familii de limbaje de pe alte continente.
+
+\section{Metode computationale}
+In principal, tehnicile comparative au mai multi pasi efectuati manual de lingvistici si presupun 
+multe ore de munca. In perioada in care calculatoarele nu erau inca inventate, cautarea cuvintelor 
+in carti, dictionare si prelucrarea acestora era o munca nu numai obositoare si repetitiva dar si 
+dificila, fiind nevoie de atentie continua. Insa, odata cu aparitia metodelor computationale, se pune accentul
+pe determinarea automata a cuvintelor inrudite precum in \cite{kondrak} sau \cite{list}. Aceste
+solutii sunt departe de a inlocui un expert in domeniul lingvisticii si isi propun mai mult sa vina
+in ajutorul acestuia pentru a facilita dezvoltarea in profunzime a domeniului.
+
+Metodele computationale doar automatizeaza procesul pastrand ideea pornirii de la formele moderne
+ale cuvintelor pentru a le reconstrui pe cele vechi din care provin. Exista numeroase date intretinute
+activ de catre specialisti ce determina conexiuni intre cuvinte din mai multe limbi moderne. Spre
+exemplu, corpusul Europarl pentru limbile oficiale vorbite in Uniunea Europeana sau WordNet (Fellbaum, 1998)
+pentru limba engleza. Asemenea resurse vaste sunt esentiale in aplicarea unor tehnici comparative 
+automate. Pe baza lor se pot determina si aplica reguli de productie a cuvintelor intr-un mod formal,
+fara prea mari interventii din partea lingvisticilor pentru asa zisele \textit{exceptii}.
+
+Este dificil de prezis cum anume a fost modificat un cuvant pentru a ajunge in forma lui actuala.
+Desi se presupune ca ar exista sabloane si reguli in evolutia unui cuvant din etimonul sau, sunt
+si exemple care s-au detasat semnificativ de stramosul lor: latinescul \textit{umbilicu(lu)s} a ajuns
+la foma de \textit{buric} in romana, \textit{nombril} in Franceza si \textit{umbigo} in Portugheza.
+
+Detectia automata a cuvintelor cognate poate fi formulata ca o problema de clasificare prin invatare
+autoamata. O serie de atribute s-au dovedid a fi de succes de-a lungul timpului precum $n$-gramele,
+distante de editare, cel mai lung subsir comun etc. Jager si Sofroniev \cite{svmclass} determina
+perechi cognate folosind un clasificator SVM iar apoi probabilitati si distante pentru a grupa
+cuvinte in grupuri cognate. Rama \cite{cnn} aplica o retea neurala convolutionala. Ciobanu si Dinu
+\cite{theone} folosesc campuri aleatoare conditionate reusind sa reconstruiasca proto-cuvinte din
+seturi cognate incomplete.
+
+\section{Latina si limbi romanice moderne}
+Romana(ro), Italiana(it), Franceza(fr), Spaniola(es), Portugheza(pt) sunt doar cateva dintre limbile
+moderne ce au evoluat din latina, in special din dialectul vulgar (latina vorbita de oamenii de rand 
+in Imperiul Roman). Bineinteles, provenind din aceeasi limba, se pot pune foarte multe probleme de 
+natura lingvistica precum gradul de similaritate dintre acestea, gasirea grupurilor de cuvinte cognate,
+reconstructia de cuvinte latinesti neatestate si asa mai departe.
+
+Tranzitia de la latina la o limba romanica moderna s-a efectuat prin schimbari majore de vocabular, 
+sintaxa si fonologie. Aceste schimbari sunt mai mult sau mai putin similare pentru fiecare limba
+romanica moderna. In principal, s-a urmarit simplificarea vocabulurului prin eliminarea arhaismelor
+si a exceptilor in favoarea regulilor clare, reducerea sinonimelor, stabilirea clara a sensurilor
+cuvintelor (conform \cite{sala}).
+
+\section{Obiective si abordare}
+Pentru limbile romanice \textit{ro, it, fr, es, pt} exita un dictionar etimologic in \cite{ripeanubook}
+pornind de a limba latina. Acest set este incomplet si ne propunem sa-l completam folosind o metoda 
+computationala bazata pe lingvistica comparativa. Evaluarea rezultatelor va fi facuta in mare parte
+manual, aceste cuvinte nefiind atestate. Metoda computationala are la baza ideea prezentata in 
+\cite{theone}.
+
+Astfel, pornind de la mai multe perechi cognate din limbi romanice moderne, se va aplica o metoda 
+de reconstructie a cuvintelor bazata pe etichetarea secventelor si campuri aleatoare conditionate. 
+Fiecare limba moderna va fi analizata separat in raport cu limba latina. Apoi, rezultatele din toate 
+limbile romanice vor fi combinate folosind agregari pe baza distantei rank \cite{rankdistance}.
+Toate acestea vor fi detaliate pe larg in urmatoarele capitole.
