@@ -108,6 +108,108 @@ si $b_1b_2...b_j$ am folosit ca si ultima operatie:
 
     
 \section{Campuri conditionate aleatoare}
-\subsection{Generalitati}
-\subsection{Aplicate pe problema reconstructiei cuvintelor}
+In continuare vrem sa invatam care sunt schimbarile ortografice produse in evolutia unui cuvant
+modern stiind etimonul sau. In sectiunea precedenta am aliniat cuvintele pentru a determina ce 
+modificari au suferit caracterele. Folosim un algoritm de invatare automata pentru a studia
+sabloane de schimbari ortografice dintre fiecare limba moderna si limba latina.
 
+Propunem o metoda bazata de campuri conditionate aleatoare, intrucat acestea au dat rezultate 
+satisfacatoare in generarea transliteratiilor \cite{ganesh} si in productia de cuvinte cognate \cite{crfciobanu}.
+
+Vom explica mai intai cateva notiuni despre campurile conditionate aleatoare iar apoi le vom aplica 
+pe problema reconstructiei de cuvinte.
+
+\subsection{Generalitati}
+Campurilor conditionate aleatoare (\textit{conditional random fields} sau prescurtat CRF) sunt o
+metoda de modelare statistica pentru a face predictii structurate.
+
+Lafferty, McCallum si Pereira\cite{crf} sunt primii care explica aceasta structura. Ei introduc un 
+nou cadru pentru construirea modelelelor probabilistice pentru segmentarea si etichetarea datelor
+secventiale. Pana in acel moment, astfel de probleme erau rezolvate prin modele Markov ascunse si 
+gramatica stocastica.
+
+Conform \cite{crf}, fie $X$ o variabile aleatoare peste secvente de date ce trebuie etichetate si 
+$Y$ o varibila aleatoare peste etichetele corespunzatoare. Construim un model de probabilitati
+conditionate $P(Y|X)$ din perechile de secvente de date si etichete.
+
+\begin{definition}
+Fie $G=(V, E)$ un graf astfel incat $Y=(Y_i)_{i \in V}$ (nodurile grafului reprezinta
+indecsii etichetelor $Y$). $(X, Y)$ se numeste camp conditionat aleator daca variabila aleatoare
+$Y_v$ conditionata de $X$ respecta propietatea Markov raportat la graful G: 
+  \begin{gather*}
+    P(Y_v | X, Y_w, w \neq v) = P(Y_v | X, Y_w, w \sim v)
+  \end{gather*}
+unde $w \sim v$ inseamna ca exista muchia $(w, v)$ in $E$.
+\end{definition}
+
+Observam ca CRF-ul este global conditionat de variabila $X$. Graful $G$ este nedirectionat, construit
+diferit in functie de atributele secventelor de etichetat dar de cele mai multe ori are forma unui
+lant sau arbore.
+
+Pentru atribute, vom defini o functie pentru a reprezenta caracteristici ale secventelor de date.
+Valoarea acestor functii se calculeaza in functie de problema pe care dorim sa o rezolvam. Le vom nota
+cu $f_k$, $g_k$ etc. Spre exemplu $g_k(v, y|S, x)$ va fi adevarat daca cuvantul X incepe cu o majuscula,
+iar eticheta $Y$ este "substantiv propiu".\cite{crf} $y|S$ reprezinta  setul de componente ale lui $Y$
+asociate cu nodurile subgrafului $S$. Functiile de atribute trebuie calculate inaintea aplicarii
+sistemului CRF.
+
+Atribuim fiecarui atribut o anumita pondere $\lambda_i$ (pentru atributele in raport cu muchile grafului $G$)
+si $\mu_i$ (pentru atributele reportate la nodurile grafului $G$). Acestea sunt valorile pe care algoritmul
+trebuie sa le invete pentru a face mai apoi predictiile.
+
+Exista doua structuri de grafuri pe care se preteaza sa aplicam sistemul CRF: cele lant si cele
+arborescente.
+
+Formula probabilitatilor conditionate pentru structura de arbore este:
+\begin{gather*}
+  P(Y|X) \propto \exp(\smashoperator{\sum_{e \in E, k}} \lambda_k f_k(e, y|e, x) + \smashoperator{\sum_{v \in V, k}} \mu_k g_k(v, y|v, x))
+\end{gather*}
+
+Formula probabilitatilor conditionate pentru structura de lant vom nota $start = Y_0$ si $stop = Y_{n+1}$
+Probabilitatile conditionate le vom calcula intr-o matrice $M$ astfel:
+\begin{gather*}
+  M_i(y', y|x) = exp(\Lambda_i(y', y|x)) \\
+  \Lambda_i(y', y|x) = \smashoperator{\sum_k} \lambda_k f_k(e_i, Y|e_i = (y', y), x) +
+                       \smashoperator{\sum_k} \mu_k g_k(v_i, Y|v_i = y, x).
+\end{gather*}
+unde, $e_i$ este muchia cu etichetele $(Y_{i-1}, Y_i)$ si $v_i$ este este nodul corespondent lui $Y_i$. 
+
+Pentru a estima parametrii $\lambda_i$ si $\mu_i$ se folosesc algoritmi iterativi pentru a maximiza
+rezultatele pe un set de date de antrenare. Algoritmii sunt prezentati in \cite{crf}.
+
+Acum pute scrie formula pentru probabilitatile conditionate pentru un graf de tip lant:
+\begin{gather*}
+  P(Y|X) \propto \frac{\smashoperator{\prod_{i=1}^{n+1}} M_i(y_{i-1}, y_i | x)}{(\smashoperator{\prod_{i=1}^{n+1}} M_i(x))_{start,stop}}
+\end{gather*}
+
+Precum si in alte modele statistice ce folosesc probabilitati conditionate (spre exemplu: Naive Bayes),
+predictia se face prin:
+
+\begin{gather*}
+  \hat{Y} = argmax_Y(P(Y|X))
+\end{gather*}
+
+Putem lua chiar si primele $n$ cele mai bune probabilitati pentru face o analiza in profunzime.
+
+\subsection{Aplicate pe problema reconstructiei cuvintelor}
+Ne intoarcem la problema de predictie a cuvintelor latinesti pornind de la cuvinte moderne folosind 
+sisteme CRF. Secventele de date vor fi cuvintele moderne. Atributele vor fi $n$-grame din cuvintele
+de intrare, extrase din ferestre de dimensiune $w$. 
+
+Etichetele se calculeaza folosind algoritmul de aliniere, folosind caracterele ce se potrivesc in 
+cuvantul modern si cuvantul latinesc. Dar, pentru ca cele doua cuvinte nu sunt complet identice,
+in cazul unei inserari vom pune caracterul adaugat la eticheta precedenta (nu putem asocia acesta
+litera cu niciuna din cuvantul de intrare). In cazul unui spatiu, aparut in cuvantul latinesc se 
+produce practic un fenomen de elidare. Asociem caracterului respectiv din cuvantul sursa, o eticheta
+noua (spre exemplu $-$) pentru a semnifica disparitia acestuia.
+
+Sistemul are nevoie de margini la capetele cuvintelor, in cazul in care avem insertii produse la 
+inceputul sau sfarsitul cuvantului, adica o eticheta "precedenta" cu care sa asociem aceste litere noi.
+Asadar, fiecare cuvant va fi exstins prin adaugarea a doua caractere \textbf{B} si \textbf{E} la 
+inceputul si sfarsitul acestuia.\cite{theone} Orice litera noua adaugata la inceput sau sfarsit, va
+fi asociata cu aceste 2 litere speciale.
+
+
+Folosim 5 astfel de sisteme CRF pentru fiecare limba moderna \textit{romana}, \textit{italiana}, 
+\textit{franceza}, \textit{spaniola}, \textit{portugheza} pusa in raport cu \textit{limba latina}.
+Fiecare sistem va calcula liste de cele mai bune 
