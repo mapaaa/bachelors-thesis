@@ -39,7 +39,7 @@ limbajului natural.
 \subsection{Needleman-Wunsch}
 Algoritmul de aliniere Needleman-Wunsch provine din bioinfomatica, mai exact din alinierea secventelor
 de proteine sau nucleotide. Determinarea alinierilor se face printr-o tehnica
-de programare dinamica. Asadar, problema initiala va fi impartita in subprobleme fie deja calculate
+de programare dinamica. Asadar, problema initiala va fi impartita in subprobleme fie deja calculate,
 fie mai usor de calculat. De fiecare cand vom spune alinieri ne vom referi doar la alinieri de tip
 Needleman-Wunsch.
 
@@ -57,6 +57,56 @@ Exista 3 tipuri de operatii intr-o aliniere la o anumita pozitie $i$:
 Se observa ca in cazul operatiei de tipul 3, caracterele din dreapta pozitiei curente $i$ se vor
 deplasa cu o pozitie.
 
+Fiecare dintre operatiile de mai sus are un anumit cost. In problema noastra de aliniere a unui
+cuvant latinesc cu un cuvant modern, vom considera costul unei operatii de \textbf{Potrvire} ca fiind $0$,
+iar costul unei operatii de \textbf{Nepotrivire} sau \textbf{Spatiu} ca fiind 1. Atfel, alinierea
+optima va fi cea cu costul minim. In procesul de potrivire nu  vom lua in considerare diacriticele.
+Literele ce contin astfel de semne vor fi considerate la fel cu literele de baza (spre exemplu,
+caracterul \textit{\`{e}} poate fi potrivit cu \textit{e}).
+
+Problema se rezolva folosind tehnica programarii dinamice. Definim
+doua matrici bidimensionale cu $n+1$ si $m+1$ coloane numerotate de $0$ la $n$ respectiv de la $0$
+la $m$:
+
+\begin{gather*}
+  D_{i,j} = \text{costul minim pentru a alinia prefixul } a_1a_2...a_i \text{ din sirul a} \\
+  \text{cu prefixul } b_1b_2...b_j \text{ din sirul b} \\
+  P_{i,j} = \text{ultima operatie efectuata } \textbf{Potrivire }, \textbf{Nepotrivire } \text{sau} 
+  \textbf{ Spatiu}
+\end{gather*}
+
+Consideram faptul ca prefixul vid va fi reprezentat de pozitia fie cu linia $0$ (in cazul in care
+prefixul vid provine din sirul $a$), fie cu coloana $0$ (in cazul in care prefixul vid provine
+din sirul $b$).
+
+Relatia de recurenta este:
+\begin{gather*}
+  D_{0,j} = j, \forall j=0,...,m \\
+  D_{i,0} = i, \forall i=0,...,n \\
+  D_{i,j} = \min \begin{dcases}
+      D_{i-1,j-1}       &, a_i=b_j \textbf{ Potrivire} \\
+      D_{i-1,j-1}+1     &, a_i \neq b_j \textbf{ Nepotrivire} \\
+      D_{i-1,j}         &, \textbf{ Spatiu} \\
+      D_{i,j-1}         &, \textbf{ Spatiu} \\
+    \end{dcases}
+\end{gather*}
+
+Scorul alinierii se va afla pe pozitia $D_{n,m}$. Pentru a reconstitui alinierea, la fiecare pas din 
+recurenta trebuie sa retinem in matricea $P$ matrice ultima operatie efectuata. Acum, pornim cu doi
+indici $i = n$ si $j = m$. Daca pentru a rezolva subproblema determinata de prefixele $a_1a_2...a_i$
+si $b_1b_2...b_j$ am folosit ca si ultima operatie:
+
+\begin{itemize}
+  \item \textbf{Potrivire}: aliniem caracterul de pe pozitia $i$ din $a$ cu cel de pe pozitia $j$ 
+    din $b$; decrementam indicii $i$ si $j$  
+  \item \textbf{Spatiu}: deducem daca spatiul este in sirul $a$ sau $b$ si refacem indicii corespunzator
+    (daca spatiul provine din sirul $a$ atunci decrementam indicele $j$, iar daca spatiul provine
+    din sirul $b$ decrementam indicele $i$
+  \item \textbf{Nepotrivire}: aliniem caracterele diferite de pe pozitiile $i$ din $a$ si $j$ din $b$;
+    decrementam indicii $i$ si $j$
+\end{itemize}
+
+    
 \section{Campuri conditionate aleatoare}
 \subsection{Generalitati}
 \subsection{Aplicate pe problema reconstructiei cuvintelor}
