@@ -5,26 +5,26 @@ limba latină. Pentru a îmbunătății rezultatele vrem să folosim informația
 limbi romanice moderne. Astfel, fiecare clasificator întoarce o listă ordonată de cuvinte latinești, 
 pe prima poziție aflându-se etimonul latinesc cu cea mai mare probabilitate. Prin agregarea 
 acestora cu o anumită metrică vom obține o lista sortata cu mai probabile cuvinte latinești. Metrica
-folosita este distanta rank \cite{rankdistance} întrucat s-au obtinut rezultate bune in alte 
-probleme de natura lingvistica precum determinarea similitudinii silabice a limbilor romanice 
+folosita este distanta rank \cite{rankdistance} întrucât s-au obținut rezultate bune în alte 
+probleme de natură lingvistică precum determinarea similitudinii silabice a limbilor romanice 
 \cite{syllabicsim}, \cite{simnat}.
 
-In primul rand vom defini ce inseamna o lista ordonata de elemente. In al doilea rand, vom explica
-distanta rank intre doua clasamente si intre un clasament si o multime de clasamente. Apoi vom
-prezenta o metoda de aflare a tuturor agregarilor unei multimi de mai multe clasamente folosind
-distanta rank. In final, vom prelucra multimea de agregari bazat pe un sistem de vot pentru a 
-determina \textbf{o singura lista ordonata} de posibile etimoane latinesti.
+În primul rând vom defini ce înseamna o listă ordonată de elemente. În al doilea rând, vom explica
+distanța rank între două clasamente și între un clasament și o mulțime de clasamente. Apoi vom
+prezenta o metodă de aflare a tuturor agregărilor unei mulțimi de mai multe clasamente folosind
+distanța rank. În final, vom prelucra mulțimea de agregări bazat pe un sistem de vot pentru a 
+determina \textbf{o singură listă ordonată} de posibile etimoane latinești.
 
 \section{Clasamente și distanța rank}
 Un \textit{clasament} este o listă ordonată de obiecte după un anumit criteriu, pe prima poziție 
 aflându-se cel cu cea mai mare importanță. În unele situații se pune problema găsirii unui clasament
-cât mai apropiat de o mulțime de mai multe clasamente. Pentru a rezolva această problemă trebuie sa
-definim mai întâi ce înseamnă distanța dintre două clasemente sau dintre un singur clasament și o
+cât mai apropiat de o mulțime de mai multe clasamente. Pentru a rezolva această problemă trebuie să
+definim mai întâi ce înseamnă distanța dintre două clasamente sau dintre un singur clasament și o
 mulțime de clasamente.
 
 Există mai multe metrici folosite cu succes în diverse aplicații: distanța \textit{Kedall tau}, 
 \textit{Spearman footrule}, \textit{Levenshtein}, dar noi vom folosi distanța \textit{rank}
-introdusa in articolul \cite{rankdistance}. In intregul capitol vom folosi următoarele notatii:
+introdusa in articolul \cite{rankdistance}. În întregul capitol vom folosi următoarele notații:
 \begin{itemize}
     \item $U = \{1, 2, ..., n\}$ o mulțime finită de obiecte numită univers 
     \item $\tau = (x_1 > x_2 > ... > x_d)$ un clasament peste universul $U$ 
@@ -47,7 +47,7 @@ Notăm ordinea elementului $x$ în $\tau$ astfel:
 \end{gather}
 
 \begin{definition}
-Fie $\tau$ si $\sigma$ două clasamente parțiale peste același univers $U$. Atunci distanța rank va fi
+Fie $\tau$ și $\sigma$ două clasamente parțiale peste același univers $U$. Atunci distanța rank va fi
 \begin{gather}
   \Updelta(\tau, \sigma) = \smashoperator{\sum_{x \in \tau \cup \sigma}} |ord(\tau, x) - ord(\sigma, x)|
 \end{gather}
@@ -64,7 +64,7 @@ diferență ce contribuie la calculul distanței rank totale.\cite{rankaggregati
 
 \subsection{Agregări cu distanța rank}
 O \textit{agregare de clasamente} reprezintă un singur clasament $\sigma$ astfel încât o anumită 
-metrică de la acesta la mulțimea de liste de agregat $T$ este minimă. Raportandu-ne la distanța
+metrică de la acesta la mulțimea de liste de agregat $T$ este minimă. Raportându-ne la distanța
 rank avem\cite{rankdistance}:
 
 \begin{definition}
@@ -78,7 +78,7 @@ $\sigma = (\sigma_1 > \sigma_2 > ... > \sigma_k)$ un clasament astfel încât $\
 
 \begin{definition}
 \label{def:Aset}
-Se numește multime de agregari de lungime $k$ a mulțimii $T$ folosind distanța rank, setul
+Se numește mulțime de agregari de lungime $k$ a mulțimii $T$ folosind distanța rank, setul
 $
   A(T, k) = \{\sigma=(\sigma_1 > \sigma_2 > ... > \sigma_k) | \sigma_i \in U, 
   \forall 1 \leqslant i \leqslant k$, si 
@@ -87,11 +87,11 @@ $
 
 
 \begin{problem}
-Fie $U$ un set de obiecte si $T = \{\tau_1, \tau_2, ..., \tau_m\}$ o multime de clasamente peste
-universul $U$. Vrem sa determinam multimea de agregari $A(T, k)$ pentru un k fixat. 
+Fie $U$ un set de obiecte și $T = \{\tau_1, \tau_2, ..., \tau_m\}$ o mulțime de clasamente peste
+universul $U$. Vrem să determinăm mulțimea de agregări $A(T, k)$ pentru un k fixat. 
 \end{problem}
 
-Contruim următoarele matrici bidimensionale $W^k(i, j)$ cu $n$ linii și $n$ coloane. Fiecare celulă
+Construim următoarele matrici bidimensionale $W^k(i, j)$ cu $n$ linii și $n$ coloane. Fiecare celulă
 din fiecare matrice reprezintă costul total din distanța rank de la un clasament $\sigma$, de 
 lungime $l$, către o mulțime $T = \{\tau_1, \tau_2, ..., \tau_m\}$ fixată indus de plasarea 
 elementului $x_i \in U$ pe poziția $j$ în $\sigma$ \cite{rankaggregationproblem}. Se observă faptul
@@ -134,40 +134,40 @@ determinăm următoarea mulțime:
 \]
 \end{problem}
 
-Problema de mai sus se aseamănă cu o problemă de cuplaj de dimensiune $k$ de cost minim întrucăt 
+Problema de mai sus se aseamănă cu o problemă de cuplaj de dimensiune $k$ de cost minim întrucât 
 vrem să formăm perechi între obiectele dintr-un univers și pozițiile unui clasament de tip agregare, 
 iar fiecare combinație are un anumit cost. Practic $(i_1, i_2, ..., i_n)$ reprezintă o permutare a 
 elementelor din $U$.
 
-O solutie pentru a rezolva problema precedenta este aplicarea algoritmul Ungar prezentat de Khun \cite{hungarianmethod}.
-Altfel, putem considera matricea $W$ ca fiind o matrice de costuri intr-un graf bipartit $G$ pe care
-aplicam un algoritm clasic de gasire a cuplajului maxim de cost minim (din care luam doar $k$ perechi). 
-Conform \cite{flowassignment} aceasta problema poate fi rezolvata in timp polinomial 
-$\mathcal{O}(n^3)$ construind o retea de flux cu capacitati convenabile si prin gasirea unor drumuri 
+O soluție pentru a rezolva problema precedentă este aplicarea algoritmul Ungar prezentat de Khun \cite{hungarianmethod}.
+Altfel, putem considera matricea $W$ ca fiind o matrice de costuri într-un graf bipartit $G$ pe care
+aplicăm un algoritm clasic de găsire a cuplajului maxim de cost minim (din care luam doar $k$ perechi). 
+Conform \cite{flowassignment} această problemă poate fi rezolvată în timp polinomial 
+$\mathcal{O}(n^3)$ construind o rețea de flux cu capacități convenabile și prin găsirea unor drumuri 
 de augmentare minime, din punct de vedere al costului, folosind algoritmul lui Dijkstra\cite{dijkstra}.
 
-Toate aceste rezolvari determina o singura agregare dar nu si pe toate, adica multimea $A(T, k)$ din
-definitia \ref{def:Aset}. In continure prezentam o metoda de determinare a tuturor agregarilor 
-bazata pe gasirea tuturor cuplajelor \textit{perfecte} de cost minim dintr-un graf, metoda 
-prezentata in \cite{allmatchings}. Algoritmul ruleaza intr-un timp polinomial. Particularizam 
-problemele si algoritmii din articolul  \textit{A generalization of the assignment problem, and its
+Toate aceste rezolvări determină o singură agregare dar nu și pe toate, adică mulțimea $A(T, k)$ din
+definiția \ref{def:Aset}. În continuare prezentăm o metoda de determinare a tuturor agregărilor 
+bazată pe găsirea tuturor cuplajelor \textit{perfecte} de cost minim dintr-un graf, metoda 
+prezentată în \cite{allmatchings}. Algoritmul rulează într-un timp polinomial. Particularizăm 
+problemele și algoritmii din articolul  \textit{A generalization of the assignment problem, and its
 application to the rank aggregation  problem} \cite{allmatchings} pentru Problema \ref{def:problem}.
 
 
 \subsection{Calcularea tuturor agregărilor optime}
-Reamintim faptul ca dorim sa calculam multimea de agregari $A(T, k)$, stiind costul plasarii 
-fiecarui element pe fiecare pozitie, memorat in matricea $W^k$ calculata la \eqref{eq:wmatrix}. 
-Reformulam problema in elemente de teoria grafurilor. Astfel, asociem Problemei \ref{def:problem} 
-un graf $G = (V, E, c, w)$, unde $V$ reprezintă multimea de noduri, $E$ este multimea de muchii iar
-$c \colon E \to \mathbb{N}$ si $w \colon E \to \mathbb{N}$ reprezinta capacitatea unei muchii
-respectiv costul acesteia. Legaturile intre Problema \ref{def:problem} si graful $G$ sunt:
+Reamintim faptul că dorim să calculăm mulțimea de agregări $A(T, k)$, știind costul plasării 
+fiecărui element pe fiecare poziție, memorat în matricea $W^k$ calculată la \eqref{eq:wmatrix}. 
+Reformulăm problema în elemente de teoria grafurilor. Astfel, asociem Problemei \ref{def:problem} 
+un graf $G = (V, E, c, w)$, unde $V$ reprezintă mulțimea de noduri, $E$ este mulțimea de muchii iar
+$c \colon E \to \mathbb{N}$ și $w \colon E \to \mathbb{N}$ reprezintă capacitatea unei muchii
+respectiv costul acesteia. Legăturile între Problema \ref{def:problem} și graful $G$ sunt:
 \begin{itemize}
   \item $V = \{src, dst\} \cup U \cup \{1, 2,..., k, k+1\}$
   \item $E = \{(src, x_i) | x_i \in U\} \cup \{(x_i, j) | x_i \in U \text{ si } j = 1,...,k\} \cup 
     \{(j, dst) | j = 1,...,k\}$  
   \item $c(muchie) = 1, \forall muchie = (x, j) \in E, j \neq k+1$
   \item $c(muchie) = \infty, \forall muchie = (x, k+1) \in E$
-  \item functia $w$ astfel:
+  \item funcția $w$ astfel:
   \begin{itemize}
     \item $w((src, x_i)) = 0, \forall x_i \in U$
     \item $w((x_i, j)) = W^k(i, j), \forall x_i \in U, j = 1,...,k+1$
@@ -175,22 +175,22 @@ respectiv costul acesteia. Legaturile intre Problema \ref{def:problem} si graful
   \end{itemize}
 \end{itemize}
 
-Potrivirea unui element $x$ cu pozitia $k+1$ va semnifica excluderea acestuia din agregare ce 
-afecteaza distanta rank dintre un clasament ce nu contine elementul $x$ si multimea intreaga $T$.
-Se poate calcula usor in acest graf un flux maxim de cost minim folosind algoritmi clasici\cite{flowassignment}).
-Notam prin $solve(W)$ un asemenea algoritm.
-Fie solutia $M = \{(x, j) | x \in U \text{ si } j = 1,...,k\}$. Urmatorul pas este aflarea unei
-solutii $M'$ diferite de $M$.
+Potrivirea unui element $x$ cu poziția $k+1$ va semnifica excluderea acestuia din agregare ce 
+afectează distanța rank dintre un clasament ce nu conține elementul $x$ și mulțimea întreagă $T$.
+Se poate calcula ușor în acest graf un flux maxim de cost minim folosind algoritmi clasici\cite{flowassignment}).
+Notăm prin $solve(W)$ un asemenea algoritm.
+Fie soluția $M = \{(x, j) | x \in U \text{ și } j = 1,...,k\}$. Următorul pas este aflarea unei
+soluții $M'$ diferite de $M$.
 
 \begin{proposition}
-Doua cuplaje $M$ si $M'$ sunt diferite daca exista cel putin o pereche $(x, y)$ care se afla in $M$
-si nu se afla in $M'$.
+Doua cuplaje $M$ și $M'$ sunt diferite dacă există cel puțin o pereche $(x, y)$ care se află în $M$
+și nu se află în $M'$.
 \end{proposition}
 
-Astfel, propunem urmatorul algoritm, adaptat din \cite{allmatchings}, prin care cautam o a doua
-solutie $M'$ fixand cate o muchie candidat $(x, y)$ prin care $M'$ sa difere de $M$. Setand costul
-muchiei $(x, y)$ pe o valoare infinita, avem garantia ca aceasta nu va fi luata in considerare in 
-constructia lui $M'$.
+Astfel, propunem următorul algoritm, adaptat din \cite{allmatchings}, prin care căutăm o a doua
+soluție $M'$ fixând câte o muchie candidat $(x, y)$ prin care $M'$ sa difere de $M$. Setând costul
+muchiei $(x, y)$ pe o valoare infinită, avem garanția ca aceasta nu va fi luată în considerare în 
+construcția lui $M'$.
 \begin{algorithm}
 \label{P}
 \caption{anotherSolution}
@@ -212,28 +212,28 @@ constructia lui $M'$.
 \end{algorithmic}
 \end{algorithm}
 
-Algoritmul returneaza fie multimea vida, fie o solutie $M'$ astfel incat exista o pereche $(x, y)
-\in M \setminus M'$. Se poate imparti problema initiala in doua subprobleme disjuncte $P_1$ si
+Algoritmul returnează fie mulțimea vidă, fie o soluție $M'$ astfel încât exista o pereche $(x, y)
+\in M \setminus M'$. Se poate împărți problema inițială în două subprobleme disjuncte $P_1$ și
 $P_2$:
 \begin{itemize}
-  \item $P_1\colon$ multimea tuturor cuplajelor ce contin muchia $(x, y)$ \\
-    In acest caz fortam pastrarea perechii in solutie prin setarea tuturor celorlalte valori de pe
-    linia $x$, coloana $y$ pe o valoare infinita in matricea $W$:
-    $w_{iy} = w_{xj}, \forall i = 1,..,n \text{, }i \neq x  \text{ si } j = 1,...,n \text{, }j \neq y$
-  \item $P_2\colon$ multimea tuturor cuplajelor ce \textbf{nu} contin muchia $(x, y)$ \\
-    In acest caz perechea $(x, y)$ nu va mai fi niciodata aleasa intr-o solutie daca costul acesteia
+  \item $P_1\colon$ mulțimea tuturor cuplajelor ce conțin muchia $(x, y)$ \\
+    În acest caz forțăm păstrarea perechii în soluție prin setarea tuturor celorlalte valori de pe
+    linia $x$, coloana $y$ pe o valoare infinita în matricea $W$:
+    $w_{iy} = w_{xj}, \forall i = 1,..,n \text{, }i \neq x  \text{ și } j = 1,...,n \text{, }j \neq y$
+  \item $P_2\colon$ mulțimea tuturor cuplajelor ce \textbf{nu} conțin muchia $(x, y)$ \\
+    În acest caz perechea $(x, y)$ nu va mai fi niciodată aleasă într-o soluție dacă costul acesteia
     este infinit:
     $w_{xy} = \infty$
 \end{itemize}
 
-Evident, exista deja cate o solutie calculata pentru cele 2 subprobleme si anume $M \in P_1$ si 
-$M' \in P_2$. Prim urmare, se poate aplica Algoritmul 1 in mod recursiv pentru fiecare dintre 
-aceste subprobleme pentru a determina intreaga multime de solutii. Aceasta abordare conduce la
-construirea unei structuri de cautare arborescente in care radacina reprezinta problema initiala
-\ref{def:problem}, iar fiecare nod intern constituie o impartire pe subprobleme dupa o pereche 
-$(x, y)$. Solutia finala se construieste traversand arborele in adancime si pastrand toate solutile
-parțiale calculate la fiecare pas. Nu se va genera aceeasi solutie de mai multe ori prin faptul ca
-problemele $P_1$ si $P_2$ sunt complet disjuncte.
+Evident, există deja cate o soluție calculată pentru cele 2 subprobleme și anume $M \in P_1$ și 
+$M' \in P_2$. Prim urmare, se poate aplica Algoritmul 1 în mod recursiv pentru fiecare dintre 
+aceste subprobleme pentru a determina întreaga mulțime de soluții. Această abordare conduce la
+construirea unei structuri de căutare arborescente în care rădăcina reprezintă problema inițială
+\ref{def:problem}, iar fiecare nod intern constituie o împărțire pe subprobleme după o pereche 
+$(x, y)$. Soluția finală se construiește traversând arborele în adâncime și păstrând toate soluțiile
+parțiale calculate la fiecare pas. Nu se va genera aceeași soluție de mai multe ori prin faptul că
+problemele $P_1$ și $P_2$ sunt complet disjuncte.
 
 \begin{algorithm}
 \caption{dfsAgregare}
@@ -255,7 +255,7 @@ problemele $P_1$ si $P_2$ sunt complet disjuncte.
 \end{algorithm}
 
 \begin{algorithm}
-\caption{Calculeaza toate cuplajele perfecte de cost minim}
+\caption{Calculează toate cuplajele perfecte de cost minim}
 \begin{algorithmic}[1]
 \REQUIRE $W$
 \ENSURE $S$
@@ -267,30 +267,30 @@ problemele $P_1$ si $P_2$ sunt complet disjuncte.
 \end{algorithmic}
 \end{algorithm}
 
-Algoritmul 3 determina toate cuplajele perfecte de cost minim pornind de la o matrice de costuri
-$W$. Calculand matricea $W$ dupa formula \eqref{eq:wmatrix}, atunci multimea $S$ determinata de
-algoritm este chiar solutia cautata in Problema \ref{def:problem}. Cateva aspecte legate de
+Algoritmul 3 determină toate cuplajele perfecte de cost minim pornind de la o matrice de costuri
+$W$. Calculând matricea $W$ după formula \eqref{eq:wmatrix}, atunci mulțimea $S$ determinată de
+algoritm este chiar soluția căutată în Problema \ref{def:problem}. Câteva aspecte legate de
 complexitatea metodei prezentate: \\
-Fie $x = |S|$, numarul total de solutii pentru o anumita problema.
+Fie $x = |S|$, numărul total de soluții pentru o anumita problema.
 \begin{itemize}
-  \item Pentru fiecare solutie nou calculata, se construiesc doua noi alte probleme. In total se vor
+  \item Pentru fiecare soluție nou calculată, se construiesc două noi alte probleme. În total se vor
     rezolva maxim $2*x+1$ subprobleme.
-  \item O subproblema necesita gasirea unui cuplaj de cost minim ce se poate calcula intr-un timp
-    polinomial folosind metoda Ungara\cite{hungarianmethod} ori un algoritm clasic de determinare
-    a fluxului maxim de cost minim intr-un graf bipartit\cite{flowassignment}.
+  \item O subproblemă necesită găsirea unui cuplaj de cost minim ce se poate calcula într-un timp
+    polinomial folosind metoda Ungară\cite{hungarianmethod} ori un algoritm clasic de determinare
+    a fluxului maxim de cost minim într-un graf bipartit\cite{flowassignment}.
 \end{itemize}
-Intuitiv, putem afirma ca Algoritmul 3 ruelaza intr-un timp polinomial. Complexitatea acestuia a
-fost demonstrata in \cite{allmatchings} ca fiind $\mathcal{O}((2x+1)k^3n\log(n+k))$.
+Intuitiv, putem afirma ca Algoritmul 3 rulează într-un timp polinomial. Complexitatea acestuia a
+fost demonstrată în \cite{allmatchings} ca fiind $\mathcal{O}((2x+1)k^3n\log(n+k))$.
 
-Subproblemele sunt complet independente de complementarele lor. Prin urmare, rezolvarile acestora se
-pot rula in paralel pe mai multe fire de executie. In experimentele rulate am ales sa pornim
-un nou fir de executie pentru fiecare subproblema de tipul $P_2$ pana la un anumit nivel din
-arborele de cautare determinat in functie de procesorul folosit. Subproblema de tipul $P_1$
-a ramas sa ruleze pe firul de executie principal.
+Subproblemele sunt complet independente de complementarele lor. Prin urmare, rezolvările acestora se
+pot rula în paralel pe mai multe fire de execuție. În experimentele rulate am ales să pornim
+un nou fir de execuție pentru fiecare subproblemă de tipul $P_2$ până la un anumit nivel din
+arborele de căutare determinat în funcție de procesorul folosit. Subproblema de tipul $P_1$
+a rămas să ruleze pe firul de execuție principal.
 
 
 \section{Determinarea tuturor agregărilor producțiilor de cuvinte}
-În capitolul precedent am prezentat o metoda de a combina o limbă romanică modernă si limba latină
+În capitolul precedent am prezentat o metoda de a combina o limbă romanică modernă și limba latină
 pentru a automatiza procesul de determinare a etimonului latinesc. Metoda returna primele $n$
 cuvinte posibile ordonate de la cel cu probabilitatea cea mai mare la cel cu probabilitatea cea mai
 mică. Vom considera aceste liste de cuvinte ca fiind clasamente. Pentru fiecare cuvânt latinesc vom
@@ -306,7 +306,7 @@ avea:
   n = |U|
 \end{gather*}
 Definim o matrice bidimensională de $k$ linii și $n$ coloane în care calculăm ordinea fiecărui 
-cuvânt din universul unui cuvant în fiecare clasament dat:
+cuvânt din universul unui cuvânt în fiecare clasament dat:
 \[
   ord[i][j] = \begin{dcases}
     |6 - r_i(x_j)|    &, x_j \in r_i \\
@@ -314,28 +314,28 @@ cuvânt din universul unui cuvant în fiecare clasament dat:
   \end{dcases}
 \]
 
-Calculam apoi matricea de costuri $W^5$ conform formulei de la \ref{eq:wmatrix} pentru a afla cum
-este afectat costul final daca un anumit cuvant $x_i \in U$ este plasat pe pozitia $j$. Aceasta 
-poziitie poate sa fie mai mare decat $5$ dar conform formulei construite, nu se va face nicio 
-distinctie intre a plasa un cuvant pe pozitia $6$ spre exemplu, sau pozitia $7$, considerandu-se
-ca respectivul element nu va apartine in agregarea finala de lungime $5$.
+Calculăm apoi matricea de costuri $W^5$ conform formulei de la \ref{eq:wmatrix} pentru a afla cum
+este afectat costul final dacă un anumit cuvânt $x_i \in U$ este plasat pe poziția $j$. Aceasta 
+poziție poate sa fie mai mare decât $5$ dar conform formulei construite, nu se va face nicio 
+distincție între a plasa un cuvânt pe poziția $6$ spre exemplu, sau poziția $7$, considerându-se
+că respectivul element nu va aparține în agregarea finala de lungime $5$.
 
-Este limpede ca se poate aplica acum Algoritmul 3 prezentat in sectiunea precedenta pentru a afla
-multimea $S = \{\sigma_1, \sigma_2, ..., \sigma_t\}$ de agregari posibile. Propunem combinarea 
-solutiilor din $S$ printr-un sistem de vot. Fiecare cuvant va primi un scor bazat pe pozitiile pe 
-care se afla in clasamentele din $S$.
+Este limpede ca se poate aplica acum Algoritmul 3 prezentat în secțiunea precedentă pentru a afla
+mulțimea $S = \{\sigma_1, \sigma_2, ..., \sigma_t\}$ de agregări posibile. Propunem combinarea 
+soluțiilor din $S$ printr-un sistem de vot. Fiecare cuvânt va primi un scor bazat pe pozițiile pe 
+care se află în clasamentele din $S$.
 
 \begin{gather*}
   scor \colon U \to \mathbb{N} \\
   scor(x_i) = \smashoperator{\sum_{j=1}^{|S|}} \sigma_j(x_i), \forall x_i \in U
 \end{gather*}
 
-Putem in sfarsit sa construim lista finala, introdusa vag la inceputul capitolului, de cuvinte 
-ordonate in functie de probabiliatea de a  fi etimonul latinesc al unor anumite cuvinte moderne 
-din \textit{ro, it, fr, es, pt}. Pe prima pozitie se va afla cuvantul produs cu scorul cel mai mic,
-adica cel ce se afla pe primele pozitii in clasamentele $S$, pe a doua pozitie, cel cu urmatorul cel
-mai mic scor, si asa mai departe. In cazul in care exista mai multe cuvinte cu acelasi scor, le 
-vom pastra pe toate pe aceeasi pozitie si le vom filtra manual folosind reguli lingvistice.
+Putem în sfârșit să construim lista finală, introdusă vag la începutul capitolului, de cuvinte 
+ordonate în funcție de probabilitatea de a fi etimonul latinesc al unor anumite cuvinte moderne 
+din \textit{ro, it, fr, es, pt}. Pe prima poziție se va afla cuvântul produs cu scorul cel mai mic,
+adică cel ce se află pe primele poziții în clasamentele $S$, pe a doua poziție, cel cu următorul cel
+mai mic scor, și asa mai departe. În cazul în care există mai multe cuvinte cu același scor, le 
+vom păstra pe toate pe aceeași poziție și le vom filtra manual folosind reguli lingvistice.
 
 \begin{gather*}
   F = (x_1 > x_2 > x_3 > x_4 > x_5) \\
