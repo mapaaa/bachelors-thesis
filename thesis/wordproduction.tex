@@ -1,4 +1,5 @@
 \chapter{Reconstrucție de cuvinte latinesti}
+\label{chap:two}
 Pornim de la formele cuvintelor din limbile romanice moderne. Fiind date mai multe perechi de cuvinte
 cognate vrem sa deducem forma latinescului stramos comun. Aplicam o metoda similara cu cea folosita
 in \cite{theone}. Ca si in \cite{theone}, ne bazam pe faptul ca modificarile ortografice sunt strans
@@ -192,6 +193,7 @@ predictia se face prin:
 Putem lua chiar si primele $n$ cele mai bune probabilitati pentru face o analiza in profunzime.
 
 \subsection{Aplicate pe problema reconstructiei cuvintelor}
+\label{subs:one}
 Ne intoarcem la problema de predictie a cuvintelor latinesti pornind de la cuvinte moderne folosind 
 sisteme CRF. Secventele de date vor fi cuvintele moderne. Atributele vor fi $n$-grame din cuvintele
 de intrare, extrase din ferestre de dimensiune $w$. 
@@ -212,4 +214,6 @@ fi asociata cu aceste 2 litere speciale.
 
 Folosim 5 astfel de sisteme CRF pentru fiecare limba moderna \textit{romana}, \textit{italiana}, 
 \textit{franceza}, \textit{spaniola}, \textit{portugheza} pusa in raport cu \textit{limba latina}.
-Fiecare sistem va calcula liste de cele mai bune 
+Fiecare sistem va calcula liste de cele mai bune $n$ cuvinte latinesti sortate in functie de 
+probabilitate. Pentru a profita de toate limbile moderne propunem o metoda de combinare a rezultatelor
+sistemelor CRF bazata pe agregari folosind distanta rank.

@@ -1,3 +1,91 @@
-\chapter{Rezultate}
-\section{Evaluare autoamata}
-\section{Evaluare manuala}
+\chapter{Experimente si rezultate}
+In capitolul \ref{chap:two} am prezentat pasii metodei propuse pentru reconstructia cuvintelor
+latinesti. Pe scurt, vom antrena mai multe sisteme CRF pe un set de date pentru a face mai apoi 
+predictii de cuvinte. Din date vor fi extrase anumite atribute pe baza unor alinieri, conform 
+sectiunii \ref{subs:one}. Predictiile sunt apoi agregate pe baza distantei rank ca in capitolul
+\ref{chap:three}.
+
+In experimentul rulat ne propunem sa reconstruim cuvinte romanesti neatestate pornind de la un posibil
+etimon latinesc.  
+
+\section{Antrenare}
+Pentru antrenarea sistemelor CRF am folosit datasetul propus de Ciobanu si Dinu \cite{dataset}.
+Acesta contine 3218 grupuri complete de cuvinte cognate pentru cinci limbi romanice (romana, italiana, 
+franceza, spaniola, portugheza) si etimoane lor latinesti. Impartim acest set de date in trei parti,
+pentru antrenare, pentru reglarea parametrilor si pentru testare. Dimensiunea proportilor este $3:1:1$.
+
+Aliniem fiecare pereche de cuvinte cognate din care extragem 3-grame ca si atribute pentru sistemele CRF.
+Folosim implementarea data de Mallet toolkit \cite{mallet}. Parametrii sunt gasiti printr-o cautare
+de tip \textit{grid search} cu numarul de iteratii $\{1, 5, 10, 25, 50, 100\}$ si pentru dimensiunea
+ferestrei $w$ de $\{1, 2, 3, 4, 5\}$.
+
+Pentru cei mai buni parametri (50 de iteratii) obtinem acuratetea top-10:
+\begin{itemize}
+    \item Spaniola   $61\%$
+    \item Franceza   $62\%$
+    \item Italiana   $62\%$
+    \item Portugheza $51\%$
+    \item Latina     $65\%$
+\end{itemize}
+
+\section{Testare}
+Aplicam modelele invatate pe o lista de 235 de cuvinte cognate ce exista in limbile romanice din 
+Occident dar nu si in limba romana. Acestea au fost extrase dintr-o lista propusa de Ripeanu in \cite{ripeanubook}.
+Agregam apoi rezultatele folosind metoda din capitolul \ref{chap:three}. Procesam productiile conform 
+urmatoarelor doua reguli:
+
+\begin{enumerate}
+  \item diftongul \textit{iă} nu exista in limba romana si il inlocuim cu \textit{ie}
+  \item consoanele duble dispar (spre exemplu \textit{ll} devinte \textit{l})
+\end{enumerate}
+
+\section{Evaluare}
+
+\subsection{Producerea de cuvinte cognate}
+Evaluarea a fost facuta manual intrucat natura problemei face dificila gasirea unei metode de evaluare
+automata. Algoritmul prezentat produce cuvinte romanesti neatestate deci doar un expert in domeniu
+le-ar putea valida. Am decis sa folosim doar italiana si latina pentru a reconstrui cuvinte romanesti
+deoarece spaniola, franceza, portugheza sunt mai departe de romana din punct de vedere ortografic,
+iar metoda prezentata se bazeaza pe analiza schimbarilor grafice.
+
+Rezultatele obtinute prin evaluarea manuala a productiilor de cuvinte romanesti pornind de la limba
+latina si italiana:
+\begin{center}
+  \begin{tabular}{|| l l l ||}
+    \hline
+    Tipul cognat romanesc & Latina & Italiana \\[0.5ex]
+    \hline
+    \hline
+    Reali                                & 82 (34.8\%)  & 72 (30.6\%) \\
+    \hline
+    Reali cu interventie lingvistica     & 12 (5.1\%)   & 11 (4.6\%) \\
+    \hline
+    Virtuali                             & 69 (29.3\%)  & 32 (13.6\%) \\
+    \hline
+    Virtuali cu interventie lingvistica  & 28 (11.9\%)  & 11 (5.1\%) \\
+    \hline
+    Inexistenti                          & 51 (21.7\%)  & 111 (47.2\%) \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\begin{itemize}
+  \item cognat \textbf{real}: cuvant ce exista in limba romana datorita unor procese de dezvoltare
+    interne ale limbii sau prin imprumutarea masiva a acestora din alte limbi
+  \item cognat \textbf{real cu interventie lingvistica}: cuvant ce exista in limba romana in urma
+    aparitiei unor noi criterii lingvistice
+  \item cognat \textbf{virtual}: cuvant ce ar fi putut exista in limba romana dar care nu au fost
+    atestate
+  \item cognat \textbf{virtual cu interventie lingvistica}: cuvant ce ar fi putut exista in limba
+    romana in urma introducerii unor noi criterii lingvistice dar care nu au fost atestate
+  \item cognat \textbf{inexsitent}: cele ce nu apartin niciunei categorii de mai sus
+\end{itemize}
+
+\subsection{Reconstruirea cuvintelor latinesti neatestate}
+In acest caz, setul de date contine cuvantul latinesc propus dar neatestatat. Este vorba de un subset
+al setului de date propus de Ripeanu in \cite{ripeanubook}. Deci am putut rula o evaluare automata
+a rezultatelor. In urma agregarii cu distanta rank am obtinut o acuratete de $23\%$ in top-10. 
+Adica am verificat ca etimonul latinesc sa se afle in primele zece productii.
+
+Dar, daca nu am folosi agregarea ci doar limba italiana, se obtine o acuratete top-10 de $38\%$.
+Astfel, metoda confirma mai mult de un sfert din cuvintele neatestate latinesti, reconstruite artificial.
