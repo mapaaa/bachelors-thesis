@@ -1,219 +1,218 @@
-\chapter{Reconstrucție de cuvinte latinesti}
+\chapter{Reconstrucție de cuvinte latinești}
 \label{chap:two}
 Pornim de la formele cuvintelor din limbile romanice moderne. Fiind date mai multe perechi de cuvinte
-cognate vrem sa deducem forma latinescului stramos comun. Aplicam o metoda similara cu cea folosita
-in \cite{theone}. Ca si in \cite{theone}, ne bazam pe faptul ca modificarile ortografice sunt strans
-legate de evolutia cuvintelor. Deci incercam sa reconstruim proto-cuvinte din forma ortografica a
+cognate vrem să deducem forma latinescului strămoș comun. Aplicăm o metodă similară cu cea folosită
+în \cite{theone}. Ca și în \cite{theone}, ne bazăm pe faptul că modificările ortografice sunt strâns
+legate de evoluția cuvintelor. Deci încercam să reconstruim proto-cuvinte din forma ortografică a
 cuvintelor moderne.
 
-In final, dorim sa obtinem o lista cu $n$ cele mai bune predictii pe care mai apoi sa le prelucam
-intr-o maniera atat automata cat si manuala pentru a obtine cele mai bune rezultate.
+În final, dorim să obținem o listă cu $n$ cele mai bune predicții pe care mai apoi sa le prelucrăm
+într-o manieră atât automată cât și manuală pentru a obține cele mai bune rezultate.
 
 \section{Prezentare generala}
 Dat fiind mai multe seturi de date de cuvinte cognate din limbi romanice moderne, metoda de 
-reconstructie va incerca sa aproximeze forma latinescului de provenienta. Vom folosi: \textit{Romana},
-\textit{Italiana}, \textit{Franceza}, \textit{Spaniola}, \textit{Portugheza}, iar seturile de date
-vor avea forma $(\textit{cuvant modern}, \textit{cuvant latinesc})$. Din acestea, modelul va invata 
-pe baza campurilor conditionate aleatoare (\textit{conditional random fields} sau prescurtat CRF) 
-diverse schimbari de ortografie suferite de cuvintele latinesti pentru a le forma pe cele moderne. 
-Apoi, vom aplica o tehnica de agregare a acestor rezultate pentru a combina informatie din toate 
-limbile. In final, vom folosi mai apoi aceste schimbari pentru a oferi variante de cuvinte ce 
-completeaza anumite seturi de date.
+reconstrucție va încerca să aproximeze forma latinescului de proveniență. Vom folosi: \textit{Română},
+\textit{Italiană}, \textit{Franceză}, \textit{Spaniolă}, \textit{Portugheză}, iar seturile de date
+vor avea forma $(\textit{cuvânt modern}, \textit{cuvânt latinesc})$. Din acestea, modelul va învăța 
+pe baza câmpurilor condiționate aleatoare (\textit{conditional random fields} sau prescurtat CRF) 
+diverse schimbări de ortografie suferite de cuvintele latinești pentru a le forma pe cele moderne. 
+Apoi, vom aplica o tehnica de agregare a acestor rezultate pentru a combina informație din toate 
+limbile. În final, vom folosi aceste schimbări pentru a oferi variante de cuvinte ce 
+completează anumite seturi de date.
 
-Pasii algoritmului pentru o anumita limba romanica moderna sunt:
+Pașii algoritmului pentru o anumită limbă romanică modernă sunt:
 
 \begin{enumerate}
-  \item Pentru fiecare pereche $(\textit{cuvant modern}, \textit{cuvant latinesc})$, vom alinia
-    cele doua cuvinte pentru a intelege ce semne ortografice s-au pastrat, schimbat sau elidat.
-  \item Pregatim antrenarea sistemului CRF: extragem caracteristici din alinierile fiecarei perechi.
-  \item Rulam sistemul CRF si obtinem liste de $n$ cele mai bune productii sortate in functie de
+  \item Pentru fiecare pereche $(\textit{cuvânt modern}, \textit{cuvânt latinesc})$, vom alinia
+    cele două cuvinte pentru a înțelege ce semne ortografice s-au păstrat, schimbat sau elidat.
+  \item Pregătim antrenarea sistemului CRF: extragem caracteristici din alinierile fiecărei perechi.
+  \item Rulăm sistemul CRF și obținem liste de $n$ cele mai bune producții sortate în funcție de
     probabilitatea lor.
 \end{enumerate}
 
 \section{Aliniere}
-Avem perechi de tipul $(\textit{cuvant modern}, \textit{cuvant latinesc})$ pe care vrem sa le aliniem.
-Nu orice aliniere ne ofera informatie valida. Avem nevoie de asa numitele alinieri optime, in care
-numarul de diferente dintre cele doua cuvinte este minim. Vom aplica algoritmul de aliniere 
-Needleman-Wunsch\cite{needle} din bioinfomatica, folosit cu succes si in probleme de procesare al
+Avem perechi de tipul $(\textit{cuvânt modern}, \textit{cuvânt latinesc})$ pe care vrem să le aliniem.
+Nu orice aliniere ne oferă informație validă. Avem nevoie de așa numitele alinieri optime, în care
+numărul de diferențe dintre cele două cuvinte este minim. Vom aplica algoritmul de aliniere 
+Needleman-Wunsch\cite{needle} din bioinformatică, folosit cu succes și în probleme de procesare al
 limbajului natural. 
 
 \subsection{Needleman-Wunsch}
-Algoritmul de aliniere Needleman-Wunsch provine din bioinfomatica, mai exact din alinierea secventelor
-de proteine sau nucleotide. Determinarea alinierilor se face printr-o tehnica
-de programare dinamica. Asadar, problema initiala va fi impartita in subprobleme fie deja calculate,
-fie mai usor de calculat. De fiecare cand vom spune alinieri ne vom referi doar la alinieri de tip
+Algoritmul de aliniere Needleman-Wunsch provine din bioinformatică, mai exact din alinierea secvențelor
+de proteine sau nucleotide. Determinarea alinierilor se face printr-o tehnică
+de programare dinamică. Așadar, problema inițială va fi împărțită în subprobleme fie deja calculate,
+fie mai ușor de calculat. De fiecare dată când vom spune alinieri ne vom referi doar la alinieri de tip
 Needleman-Wunsch.
 
-Avem doua siruri $a=a_1a_2...a_n$ si $b=b_1b_2...b_m$ de caractere de lungime $n$ respectiv $m$. 
-Vrem sa aliniem sirul $b$ pentru a se potrivi cu sirul $a$.  
+Avem doua șiruri $a=a_1a_2...a_n$ și $b=b_1b_2...b_m$ de caractere de lungime $n$ respectiv $m$. 
+Vrem sa aliniem șirul $b$ pentru a se potrivi cu șirul $a$.  
 
-Exista 3 tipuri de operatii intr-o aliniere la o anumita pozitie $i$:
+Există 3 tipuri de operații într-o aliniere la o anumită poziție $i$:
 \begin{enumerate}
   \item \textbf{Potrivire}, caracterele aliniate se potrivesc: $a_i=b_i$
   \item \textbf{Nepotrivire}, caracterele aliniate nu se potrivesc: $a_i \neq b_i$
-  \item \textbf{Spatiu}, caracterul din primul sir nu se aliniaza cu niciun caracter din al doilea sir
-    sau invers;
+  \item \textbf{Spațiu}, caracterul din primul șir nu se aliniază cu niciun caracter din al doilea șir
+    sau invers
 \end{enumerate}
 
-Se observa ca in cazul operatiei de tipul 3, caracterele din dreapta pozitiei curente $i$ se vor
-deplasa cu o pozitie.
+Se observă că în cazul operației de tipul 3, caracterele din dreapta poziției curente $i$ se vor
+deplasa cu o poziție.
 
-Fiecare dintre operatiile de mai sus are un anumit cost. In problema noastra de aliniere a unui
-cuvant latinesc cu un cuvant modern, vom considera costul unei operatii de \textbf{Potrvire} ca fiind $0$,
-iar costul unei operatii de \textbf{Nepotrivire} sau \textbf{Spatiu} ca fiind 1. Atfel, alinierea
-optima va fi cea cu costul minim. In procesul de potrivire nu  vom lua in considerare diacriticele.
-Literele ce contin astfel de semne vor fi considerate la fel cu literele de baza (spre exemplu,
+Fiecare dintre operațiile de mai sus are un anumit cost. În problema noastră de aliniere a unui
+cuvânt latinesc cu un cuvânt modern, vom considera costul unei operații de \textbf{Potrivire} ca fiind $0$,
+iar costul unei operații de \textbf{Nepotrivire} sau \textbf{Spațiu} ca fiind 1. Astfel, alinierea
+optimă va fi cea cu costul minim. În procesul de potrivire nu  vom lua în considerare diacriticele.
+Literele ce conțin astfel de semne vor fi considerate la fel cu literele de bază (spre exemplu,
 caracterul \textit{\`{e}} poate fi potrivit cu \textit{e}).
 
-Problema se rezolva folosind tehnica programarii dinamice. Definim
-doua matrici bidimensionale cu $n+1$ si $m+1$ coloane numerotate de $0$ la $n$ respectiv de la $0$
+Problema se rezolvă folosind tehnica programării dinamice. Definim
+două matrici bidimensionale cu $n+1$ și $m+1$ coloane numerotate de $0$ la $n$ respectiv de la $0$
 la $m$:
 
 \begin{gather*}
-  D_{i,j} = \text{costul minim pentru a alinia prefixul } a_1a_2...a_i \text{ din sirul a} \\
-  \text{cu prefixul } b_1b_2...b_j \text{ din sirul b} \\
-  P_{i,j} = \text{ultima operatie efectuata } \textbf{Potrivire }, \textbf{Nepotrivire } \text{sau} 
-  \textbf{ Spatiu}
+  D_{i,j} = \text{costul minim pentru a alinia prefixul } a_1a_2...a_i \text{ din șirul a} \\
+  \text{cu prefixul } b_1b_2...b_j \text{ din șirul b} \\
+  P_{i,j} = \text{ultima operație efectuată } \textbf{Potrivire }, \textbf{Nepotrivire } \text{sau} 
+  \textbf{ Spațiu}
 \end{gather*}
 
-Consideram faptul ca prefixul vid va fi reprezentat de pozitia fie cu linia $0$ (in cazul in care
-prefixul vid provine din sirul $a$), fie cu coloana $0$ (in cazul in care prefixul vid provine
-din sirul $b$).
+Considerăm faptul că prefixul vid va fi reprezentat de poziția fie cu linia $0$ (în cazul în care
+prefixul vid provine din șirul $a$), fie cu coloana $0$ (în cazul în care prefixul vid provine
+din șirul $b$).
 
-Relatia de recurenta este:
+Relația de recurență este:
 \begin{gather*}
   D_{0,j} = j, \forall j=0,...,m \\
   D_{i,0} = i, \forall i=0,...,n \\
   D_{i,j} = \min \begin{dcases}
       D_{i-1,j-1}       &, a_i=b_j \textbf{ Potrivire} \\
       D_{i-1,j-1}+1     &, a_i \neq b_j \textbf{ Nepotrivire} \\
-      D_{i-1,j}         &, \textbf{ Spatiu} \\
-      D_{i,j-1}         &, \textbf{ Spatiu} \\
+      D_{i-1,j}         &, \textbf{ Spațiu} \\
+      D_{i,j-1}         &, \textbf{ Spațiu} \\
     \end{dcases}
 \end{gather*}
 
-Scorul alinierii se va afla pe pozitia $D_{n,m}$. Pentru a reconstitui alinierea, la fiecare pas din 
-recurenta trebuie sa retinem in matricea $P$ matrice ultima operatie efectuata. Acum, pornim cu doi
-indici $i = n$ si $j = m$. Daca pentru a rezolva subproblema determinata de prefixele $a_1a_2...a_i$
-si $b_1b_2...b_j$ am folosit ca si ultima operatie:
+Scorul alinierii se va afla pe poziția $D_{n,m}$. Pentru a reconstitui alinierea, la fiecare pas din 
+recurență trebuie să reținem în matricea $P$ ultima operație efectuată. Acum, pornim cu doi
+indici $i = n$ și $j = m$. Dacă pentru a rezolva subproblema determinată de prefixele $a_1a_2...a_i$
+și $b_1b_2...b_j$ am folosit ca și ultimă operație:
 
 \begin{itemize}
-  \item \textbf{Potrivire}: aliniem caracterul de pe pozitia $i$ din $a$ cu cel de pe pozitia $j$ 
-    din $b$; decrementam indicii $i$ si $j$  
-  \item \textbf{Spatiu}: deducem daca spatiul este in sirul $a$ sau $b$ si refacem indicii corespunzator
-    (daca spatiul provine din sirul $a$ atunci decrementam indicele $j$, iar daca spatiul provine
-    din sirul $b$ decrementam indicele $i$
-  \item \textbf{Nepotrivire}: aliniem caracterele diferite de pe pozitiile $i$ din $a$ si $j$ din $b$;
-    decrementam indicii $i$ si $j$
+  \item \textbf{Potrivire}: aliniem caracterul de pe poziția $i$ din $a$ cu cel de pe poziția $j$ 
+    din $b$; decrementăm indicii $i$ și $j$  
+  \item \textbf{Spațiu}: deducem dacă spațiul este în șirul $a$ sau $b$ și refacem indicii corespunzător
+    (dacă spațiul provine din șirul $a$ atunci decrementăm indicele $j$, iar dacă spațiul provine
+    din șirul $b$ decrementăm indicele $i$
+  \item \textbf{Nepotrivire}: aliniem caracterele diferite de pe pozițiile $i$ din $a$ și $j$ din $b$;
+    decrementăm indicii $i$ și $j$
 \end{itemize}
 
     
-\section{Campuri conditionate aleatoare}
-In continuare vrem sa invatam care sunt schimbarile ortografice produse in evolutia unui cuvant
-modern stiind etimonul sau. In sectiunea precedenta am aliniat cuvintele pentru a determina ce 
-modificari au suferit caracterele. Folosim un algoritm de invatare automata pentru a studia
-sabloane de schimbari ortografice dintre fiecare limba moderna si limba latina.
+\section{Câmpuri condiționate aleatoare}
+În continuare vrem să învățăm care sunt schimbările ortografice produse în evoluția unui cuvânt 
+modern știind etimonul său. În secțiunea precedentă am aliniat cuvintele pentru a determina ce  
+modificări au suferit caracterele. Folosim un algoritm de învățare automată pentru a studia
+șabloane de schimbări ortografice dintre fiecare limbă modernă și limba latină.
 
-Propunem o metoda bazata de campuri conditionate aleatoare, intrucat acestea au dat rezultate 
-satisfacatoare in generarea transliteratiilor \cite{ganesh} si in productia de cuvinte cognate \cite{crfciobanu}.
+Propunem o metodă bazată de câmpuri condiționate aleatoare, întrucât acestea au dat rezultate satisfăcătoare în generarea transliterațiilor \cite{ganesh} și în producția de cuvinte cognate \cite{crfciobanu}.
 
-Vom explica mai intai cateva notiuni despre campurile conditionate aleatoare iar apoi le vom aplica 
-pe problema reconstructiei de cuvinte.
+Vom explica mai întâi câteva noțiuni despre câmpurile condiționate aleatoare iar apoi le vom aplica 
+pe problema reconstrucției de cuvinte.
 
-\subsection{Generalitati}
-Campurilor conditionate aleatoare (\textit{conditional random fields} sau prescurtat CRF) sunt o
-metoda de modelare statistica pentru a face predictii structurate.
+\subsection{Generalități}
+Câmpurilor condiționate aleatoare (\textit{conditional random fields} sau prescurtat CRF) sunt o
+metodă de modelare statistică pentru a face predicții structurate.
 
-Lafferty, McCallum si Pereira\cite{crf} sunt primii care explica aceasta structura. Ei introduc un 
-nou cadru pentru construirea modelelelor probabilistice pentru segmentarea si etichetarea datelor
-secventiale. Pana in acel moment, astfel de probleme erau rezolvate prin modele Markov ascunse si 
-gramatica stocastica.
+Lafferty, McCallum si Pereira\cite{crf} sunt primii care explică această structură. Ei introduc un 
+nou cadru pentru construirea modelelor probabilistice pentru segmentarea și etichetarea datelor
+secvențiale. Până în acel moment, astfel de probleme erau rezolvate prin modele Markov ascunse și 
+gramatici stocastice.
 
-Conform \cite{crf}, fie $X$ o variabile aleatoare peste secvente de date ce trebuie etichetate si 
-$Y$ o varibila aleatoare peste etichetele corespunzatoare. Construim un model de probabilitati
-conditionate $P(Y|X)$ din perechile de secvente de date si etichete.
+Conform \cite{crf}, fie $X$ o variabilă aleatoare peste secvențe de date ce trebuie etichetate și 
+$Y$ o variabilă aleatoare peste etichetele corespunzătoare. Construim un model de probabilități
+condiționate $P(Y|X)$ din perechile de secvențe de date și etichete.
 
 \begin{definition}
-Fie $G=(V, E)$ un graf astfel incat $Y=(Y_i)_{i \in V}$ (nodurile grafului reprezinta
-indecsii etichetelor $Y$). $(X, Y)$ se numeste camp conditionat aleator daca variabila aleatoare
-$Y_v$ conditionata de $X$ respecta propietatea Markov raportat la graful G: 
+Fie $G=(V, E)$ un graf astfel încât $Y=(Y_i)_{i \in V}$ (nodurile grafului reprezintă
+indecșii etichetelor $Y$). $(X, Y)$ se numește câmp condiționat aleator dacă variabila aleatoare
+$Y_v$ condiționată de $X$ respectă proprietatea Markov raportat la graful G: 
   \begin{gather*}
     P(Y_v | X, Y_w, w \neq v) = P(Y_v | X, Y_w, w \sim v)
   \end{gather*}
-unde $w \sim v$ inseamna ca exista muchia $(w, v)$ in $E$.
+unde $w \sim v$ înseamnă că există muchia $(w, v)$ în $E$.
 \end{definition}
 
-Observam ca CRF-ul este global conditionat de variabila $X$. Graful $G$ este nedirectionat, construit
-diferit in functie de atributele secventelor de etichetat dar de cele mai multe ori are forma unui
-lant sau arbore.
+Observăm că CRF-ul este global condiționat de variabila $X$. Graful $G$ este nedirecționat, construit
+diferit în funcția de atributele secvențelor de etichetat dar de cele mai multe ori are forma unui
+lanț sau arbore.
 
-Pentru atribute, vom defini o functie pentru a reprezenta caracteristici ale secventelor de date.
-Valoarea acestor functii se calculeaza in functie de problema pe care dorim sa o rezolvam. Le vom nota
-cu $f_k$, $g_k$ etc. Spre exemplu $g_k(v, y|S, x)$ va fi adevarat daca cuvantul X incepe cu o majuscula,
-iar eticheta $Y$ este "substantiv propiu".\cite{crf} $y|S$ reprezinta  setul de componente ale lui $Y$
-asociate cu nodurile subgrafului $S$. Functiile de atribute trebuie calculate inaintea aplicarii
-sistemului CRF.
+Pentru atribute, vom defini o funcție pentru a reprezenta caracteristici ale secvențelor de date. 
+Valoarea acestor funcții se calculează în funcție de problema pe care dorim să o rezolvăm. Le vom nota 
+cu $f_k$, $g_k$ etc. Spre exemplu $g_k(v, y|S, x)$ va fi adevărat dacă cuvântul X începe cu o majusculă, 
+iar eticheta $Y$ este "substantiv propiu".\cite{crf} $y|S$ reprezintă  setul de componente ale lui $Y$ 
+asociate cu nodurile subgrafului $G$. Funcțiile de atribute trebuie calculate înaintea aplicării 
+sistemului CRF. 
 
-Atribuim fiecarui atribut o anumita pondere $\lambda_i$ (pentru atributele in raport cu muchile grafului $G$)
-si $\mu_i$ (pentru atributele reportate la nodurile grafului $G$). Acestea sunt valorile pe care algoritmul
-trebuie sa le invete pentru a face mai apoi predictiile.
+Atribuim fiecărui atribut o anumită pondere $\lambda_i$ (pentru atributele în raport cu muchile grafului $G$)
+și $\mu_i$ (pentru atributele reportate la nodurile grafului $G$). Acestea sunt valorile pe care algoritmul
+trebuie să le învețe pentru a face mai apoi predicțiile.
 
-Exista doua structuri de grafuri pe care se preteaza sa aplicam sistemul CRF: cele lant si cele
+Exista doua structuri de grafuri pe care se pretează să aplicăm sistemul CRF: cele lanț și cele
 arborescente.
 
-Formula probabilitatilor conditionate pentru structura de arbore este:
+Formula probabilităților condiționate pentru structura de arbore este:
 \begin{gather*}
   P(Y|X) \propto \exp(\smashoperator{\sum_{e \in E, k}} \lambda_k f_k(e, y|e, x) + \smashoperator{\sum_{v \in V, k}} \mu_k g_k(v, y|v, x))
 \end{gather*}
 
-Formula probabilitatilor conditionate pentru structura de lant vom nota $start = Y_0$ si $stop = Y_{n+1}$
-Probabilitatile conditionate le vom calcula intr-o matrice $M$ astfel:
+Pentru a determina formula probabilităților condiționate pentru structura de lanț vom nota $start = Y_0$ și $stop = Y_{n+1}$
+Probabilitățile condiționate le vom calcula într-o matrice $M$ astfel:
 \begin{gather*}
   M_i(y', y|x) = exp(\Lambda_i(y', y|x)) \\
   \Lambda_i(y', y|x) = \smashoperator{\sum_k} \lambda_k f_k(e_i, Y|e_i = (y', y), x) +
                        \smashoperator{\sum_k} \mu_k g_k(v_i, Y|v_i = y, x).
 \end{gather*}
-unde, $e_i$ este muchia cu etichetele $(Y_{i-1}, Y_i)$ si $v_i$ este este nodul corespondent lui $Y_i$. 
+unde, $e_i$ este muchia cu etichetele $(Y_{i-1}, Y_i)$ și $v_i$ este nodul corespondent lui $Y_i$. 
 
-Pentru a estima parametrii $\lambda_i$ si $\mu_i$ se folosesc algoritmi iterativi pentru a maximiza
-rezultatele pe un set de date de antrenare. Algoritmii sunt prezentati in \cite{crf}.
+Pentru a estima parametrii $\lambda_i$ și $\mu_i$ se folosesc algoritmi iterativi pentru a maximiza
+rezultatele pe un set de date de antrenare. Algoritmii sunt prezentați în \cite{crf}.
 
-Acum pute scrie formula pentru probabilitatile conditionate pentru un graf de tip lant:
+Acum pute scrie formula pentru probabilitățile condiționate pentru un graf de tip lanț:
 \begin{gather*}
   P(Y|X) \propto \frac{\smashoperator{\prod_{i=1}^{n+1}} M_i(y_{i-1}, y_i | x)}{(\smashoperator{\prod_{i=1}^{n+1}} M_i(x))_{start,stop}}
 \end{gather*}
 
-Precum si in alte modele statistice ce folosesc probabilitati conditionate (spre exemplu: Naive Bayes),
-predictia se face prin:
+Precum și în alte modele statistice ce folosesc probabilități condiționate (spre exemplu: Naive Bayes),
+predicția se face prin:
 
 \begin{gather*}
   \hat{Y} = argmax_Y(P(Y|X))
 \end{gather*}
 
-Putem lua chiar si primele $n$ cele mai bune probabilitati pentru face o analiza in profunzime.
+Putem lua chiar și primele $n$ cele mai bune probabilități pentru face o analiză în profunzime.
 
-\subsection{Aplicate pe problema reconstructiei cuvintelor}
+\subsection{Aplicate pe problema reconstrucției cuvintelor}
 \label{subs:one}
-Ne intoarcem la problema de predictie a cuvintelor latinesti pornind de la cuvinte moderne folosind 
-sisteme CRF. Secventele de date vor fi cuvintele moderne. Atributele vor fi $n$-grame din cuvintele
+Ne întoarcem la problema de predicție a cuvintelor latinești pornind de la cuvinte moderne folosind 
+sisteme CRF. Secvențele de date vor fi cuvintele moderne. Atributele vor fi $n$-grame din cuvintele
 de intrare, extrase din ferestre de dimensiune $w$. 
 
-Etichetele se calculeaza folosind algoritmul de aliniere, folosind caracterele ce se potrivesc in 
-cuvantul modern si cuvantul latinesc. Dar, pentru ca cele doua cuvinte nu sunt complet identice,
-in cazul unei inserari vom pune caracterul adaugat la eticheta precedenta (nu putem asocia acesta
-litera cu niciuna din cuvantul de intrare). In cazul unui spatiu, aparut in cuvantul latinesc se 
-produce practic un fenomen de elidare. Asociem caracterului respectiv din cuvantul sursa, o eticheta
-noua (spre exemplu $-$) pentru a semnifica disparitia acestuia.
+Etichetele se calculează folosind algoritmul de aliniere, utilizând caracterele ce se potrivesc în 
+cuvântul modern și cuvântul latinesc. Dar, pentru că cele două cuvinte nu sunt complet identice,
+în cazul unei inserări vom pune caracterul adăugat la eticheta precedentă (nu putem asocia aceasta
+literă cu niciuna din cuvântul de intrare). În cazul unui spațiu, apărut în cuvântul latinesc se 
+produce practic un fenomen de elidare. Asociem caracterului respectiv din cuvântul sursă, o etichetă
+nouă (spre exemplu $-$) pentru a semnifica dispariția acestuia.
 
-Sistemul are nevoie de margini la capetele cuvintelor, in cazul in care avem insertii produse la 
-inceputul sau sfarsitul cuvantului, adica o eticheta "precedenta" cu care sa asociem aceste litere noi.
-Asadar, fiecare cuvant va fi exstins prin adaugarea a doua caractere \textbf{B} si \textbf{E} la 
-inceputul si sfarsitul acestuia.\cite{theone} Orice litera noua adaugata la inceput sau sfarsit, va
-fi asociata cu aceste 2 litere speciale.
+Sistemul are nevoie de margini la capetele cuvintelor, în cazul în care avem inserții produse la 
+începutul sau sfârșitul cuvântului, adică o eticheta "precedentă" cu care să asociem aceste litere noi.
+Așadar, fiecare cuvânt va fi extins prin adăugarea a două caractere \textbf{B} și \textbf{E} la 
+începutul și sfârșitul acestuia.\cite{theone} Orice literă nouă adăugata la început sau la sfârșit, va
+fi asociată cu aceste 2 litere speciale.
 
 
-Folosim 5 astfel de sisteme CRF pentru fiecare limba moderna \textit{romana}, \textit{italiana}, 
-\textit{franceza}, \textit{spaniola}, \textit{portugheza} pusa in raport cu \textit{limba latina}.
-Fiecare sistem va calcula liste de cele mai bune $n$ cuvinte latinesti sortate in functie de 
-probabilitate. Pentru a profita de toate limbile moderne propunem o metoda de combinare a rezultatelor
-sistemelor CRF bazata pe agregari folosind distanta rank.
+Folosim 5 astfel de sisteme CRF pentru fiecare limba modernă \textit{română}, \textit{italiană}, 
+\textit{franceză}, \textit{spaniolă}, \textit{portugheză} pusa în raport cu \textit{limba latină}.
+Fiecare sistem va calcula liste de cele mai bune $n$ cuvinte latinești sortate în funcție de 
+probabilitate. Pentru a profita de toate limbile moderne propunem o metodă de combinare a rezultatelor
+sistemelor CRF bazată pe agregări folosind distanța rank.
