@@ -6,6 +6,8 @@ import numpy as np
 import os
 import sys
 
+import threading
+
 from copy import deepcopy
 from munkres import Munkres, DISALLOWED, print_matrix
 
@@ -80,12 +82,95 @@ def P(M, t, S, s, sink):
     return []
 
 
+def solve(M1, t1, S1, E, sink, i_x, i_y, level):
+   # print('S1=', [(i_x[x], i_y[y]) for (x, y) in S1])
+    s1 = 0
+    for (x, y) in S1:
+        s1 = s1 + M1[x][y]
+
+    S1_prim = P(M1, t1, S1, s1, sink)
+    for i in range(len(S1_prim)):
+        if S1_prim[i][1] > sink:
+            S1_prim[i] = (S1_prim[i][0], sink)
+    if len(S1_prim) == 0:
+        return
+    #print('S1_prim=', [(i_x[x], i_y[y]) for (x, y) in S1_prim])
+
+    # adaug la solutie etichetele reale
+    S1_c = S1_prim.copy()
+    for i in range(len(S1_c)):
+        (x, y) = S1_c[i]
+        S1_c[i] = (i_x[x], i_y[y])
+    newsol = list(set().union(S1_c, E))
+    newsol.sort()
+    if newsol not in Sol:
+        Sol.append(newsol)
+
+    (x, y) = (0, 0)
+    for (x1, y1) in S1: 
+        if (x1, y1) not in S1_prim:
+            x = x1
+            y = y1
+            break
+
+    # subproblema 1: nu avem voie sa folosim muchia (x, y)
+    M1[x][y] = 1e9
+    if y >= sink:
+        # cuvantul x nu mai poate fi asignat niciunei alte poziti
+        for i in range(sink, M1.shape[1]):
+            M1[x][i] = 1e9
+
+    args1 = (np.copy(M1), t1, S1_prim.copy(),  E.copy(), sink, i_x.copy(), i_y.copy(), level+1)
+    #solve(np.copy(M1), t1, S1_prim.copy(), E.copy(), sink, i_x.copy(), i_y.copy())
+
+    # subproblema 2: folosim muchia (x, y)
+    if (i_x[x], i_y[y]) not in E:
+        E.append((i_x[x], i_y[y]))
+
+    S1.remove((x, y))
+    # stergem linia x
+    M1 = np.delete(M1, (x), axis=0)
+    # actualizam etichetele
+    i_x.pop(x)
+    for i in range(len(S1)):
+        if S1[i][0] >= x:
+            S1[i] = (S1[i][0] - 1, S1[i][1])
+        
+    if y < sink: 
+        M1 = np.delete(M1, (y), axis=1)
+        i_y.pop(y)
+        for i in range(len(S1)):
+            if S1[i][1] >= y:
+                S1[i] = (S1[i][0], S1[i][1] - 1)
+        sink -= 1
+
+    else:
+        j = M1.shape[1] - 1
+        M1 = np.delete(M1, (j), axis=1)
+        i_y.pop(j)
+        for i in range(len(S1)):
+            if S1[i][1] >= j:
+                S1[i] = (S1[i][0], S1[i][1] - 1)
+    args2 = (np.copy(M1), t1-1, S1.copy(), E.copy(), sink, i_x.copy(), i_y.copy(), level+1)
+    if level <= 15:
+        thread2 = threading.Thread(target=solve, args=args2)
+        thread2.start()
+        solve(args1[0], args1[1], args1[2], args1[3], args1[4], args1[5], args1[6], args1[7])
+        thread2.join()
+    else:
+        solve(args1[0], args1[1], args1[2], args1[3], args1[4], args1[5], args1[6], args1[7])
+        solve(args2[0], args2[1], args2[2], args2[3], args2[4], args2[5], args2[6], args2[7])
+        #pool.map(solve, [args1, args2])
+    #solve(np.copy(M1), t1-1, S1.copy(), E.copy(), sink, i_x.copy(), i_y.copy())
+
+
 # w = matricea de costuri
 # t = marimea cuplajului dorit
 # AAP = All Assignments Problem
 # Adapted from F. Manea and C.Ploscaru / A Generalization of the Assignment
 # Problem and its Application to the Rank Aggregation Problem
 def AAP(M, t):
+    global Sol
     Sol = []
     S = solveGAP(M, t)
     if len(S) == 0:
@@ -106,79 +191,11 @@ def AAP(M, t):
 
     S.sort()
     Sol = [S]
-    St = [(np.copy(M), t, S.copy(), [], sink, i_x.copy(), i_y.copy())]
-    while len(St) != 0:
-        problem1 = St.pop()
-        (M1, t1, S1, E, sink, i_x, i_y) = problem1
-        #print('S1=', [(i_x[x], i_y[y]) for (x, y) in S1])
-        s1 = 0
-        for (x, y) in S1:
-            s1 = s1 + M1[x][y]
-
-        S1_prim = P(M1, t1, S1, s1, sink)
-        for i in range(len(S1_prim)):
-            if S1_prim[i][1] > sink:
-                S1_prim[i] = (S1_prim[i][0], sink)
-        if len(S1_prim) == 0:
-            continue
-        #print('S1_prim=', [(i_x[x], i_y[y]) for (x, y) in S1_prim])
-    
-        # adaug la solutie etichetele reale
-        S1_c = S1_prim.copy()
-        for i in range(len(S1_c)):
-            (x, y) = S1_c[i]
-            S1_c[i] = (i_x[x], i_y[y])
-        newsol = list(set().union(S1_c, E))
-        newsol.sort()
-        if newsol not in Sol:
-            Sol.append(newsol)
-
-        (x, y) = (0, 0)
-        for (x1, y1) in S1: 
-            if (x1, y1) not in S1_prim:
-                x = x1
-                y = y1
-                break
-
-        # subproblema 1: nu avem voie sa folosim muchia (x, y)
-        M1[x][y] = 1e9
-        if y >= sink:
-            # cuvantul x nu mai poate fi asignat niciunei alte poziti
-            for i in range(sink, M1.shape[1]):
-                M1[x][i] = 1e9
-        St.append((np.copy(M1), t1, S1_prim.copy(), E.copy(), sink, i_x.copy(), i_y.copy()))
-
-        # subproblema 2: folosim muchia (x, y)
-        if (i_x[x], i_y[y]) not in E:
-            E.append((i_x[x], i_y[y]))
-
-        S1.remove((x, y))
-        # stergem linia x
-        M1 = np.delete(M1, (x), axis=0)
-        # actualizam etichetele
-        i_x.pop(x)
-        for i in range(len(S1)):
-            if S1[i][0] >= x:
-                S1[i] = (S1[i][0] - 1, S1[i][1])
-            
-        if y < sink: 
-            M1 = np.delete(M1, (y), axis=1)
-            i_y.pop(y)
-            for i in range(len(S1)):
-                if S1[i][1] >= y:
-                    S1[i] = (S1[i][0], S1[i][1] - 1)
-            sink -= 1
-
-        else:
-            j = M1.shape[1] - 1
-            M1 = np.delete(M1, (j), axis=1)
-            i_y.pop(j)
-            for i in range(len(S1)):
-                if S1[i][1] >= j:
-                    S1[i] = (S1[i][0], S1[i][1] - 1)
-            
-
-        St.append((np.copy(M1), t1-1, S1.copy(), E.copy(), sink, i_x.copy(), i_y.copy()))
+    thread1 = threading.Thread(target=solve, args=(np.copy(M), t, S.copy(), [], sink, i_x.copy(), i_y.copy(), 1))
+    thread1.start()
+    thread1.join()
+    #args = (np.copy(M), t, S.copy(), [], sink, i_x.copy(), i_y.copy(), 1)
+    #result = pool.map(solve, args)
     return Sol
 
 
@@ -187,6 +204,7 @@ def RDAs(rankings, latin_word):
     l = CNT_BEST_PRODUCTIONS
     # u = universul de cuvinte
     u = list(set().union(*[x for x in rankings]))
+    print('Univers: ' + str(u))
     _ord = make_ord(u, rankings)
     w = np.zeros((len(u), len(u)), dtype=int)
     for i in range(len(u)):
@@ -249,6 +267,7 @@ def main():
     if args.input is None:
         print('Must specify input file or directory!')
         return
+    #print('Threading: ' + str(threading.active_count()))
     filepath = args.input + '/'
     for dir_name in os.listdir(filepath):
         latin_dict = {}
@@ -259,6 +278,7 @@ def main():
             f.close
         out = open(str(dir_name) + '-all-best-' + str(CNT_BEST_PRODUCTIONS) + '.txt', 'w')
         for latin_word in latin_dict:
+            print(latin_word)
             best = RDAs(latin_dict[latin_word], latin_word)
             for sir in best:
                 out.write(sir+'\n')
